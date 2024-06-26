@@ -1,5 +1,6 @@
 package com.quach.shop_giay.database;
 
+import com.quach.shop_giay.model.Account;
 import com.quach.shop_giay.model.Order;
 import com.quach.shop_giay.model.User;
 
@@ -25,7 +26,7 @@ public class OrderDAO implements DAOInterface<Order> {
                 Date orderDate = rs.getDate("order_date");
                 double totalAmount = rs.getDouble("total_amount");
                 String orderStatus = rs.getString("order_status");
-                User user = new UserDAO().getId(new User(userId, "", "", "", "", "", "", "",""));
+                User user = new UserDAO().getId(new User(userId,new Account(), "", "", "", "", "",""));
                 Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
                 ketqua.add(order);
             }
@@ -50,7 +51,7 @@ public class OrderDAO implements DAOInterface<Order> {
                 Date orderDate = rs.getDate("order_date");
                 double totalAmount = rs.getDouble("total_amount");
                 String orderStatus = rs.getString("order_status");
-                User user = new UserDAO().getId(new User(userId, "", "", "", "", "", "", "",""));
+                User user = new UserDAO().getId(new User(userId, new Account(), "", "", "", "", "",""));
                 ketqua = new Order(orderId, user, orderDate, totalAmount, orderStatus);
             }
         } catch (Exception e) {
