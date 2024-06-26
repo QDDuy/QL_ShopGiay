@@ -1,6 +1,10 @@
 package com.quach.shop_giay.controler.admin;
+import com.quach.shop_giay.database.AccountDAO;
+import com.quach.shop_giay.database.EmployeesDAO;
 import com.quach.shop_giay.database.OrderDAO;
 import com.quach.shop_giay.database.UserDAO;
+import com.quach.shop_giay.model.Account;
+import com.quach.shop_giay.model.Employees;
 import com.quach.shop_giay.model.Order;
 import com.quach.shop_giay.model.User;
 import jakarta.servlet.ServletException;
@@ -67,13 +71,22 @@ public class AdminController extends HttpServlet {
 
     }
 
-//    private  void showTaikhoan(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
-//        Taikho userDAO=new UserDAO();
-//        List<User> listUsers = userDAO.getAll();
-//        System.out.println(listUsers);
-//        req.setAttribute("listUsers",listUsers);
-//        req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
-//    }
+    private  void showTaikhoan(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
+        AccountDAO accountDAO=new AccountDAO();
+        Account account = new Account();;
+        List<Account> listacc = accountDAO.getAll();
+        System.out.println(listacc);
+        req.setAttribute("listacc",listacc);
+        req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
+    }
 
+    private  void showEmployee(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
+        EmployeesDAO employeesDAO = new EmployeesDAO();
+        Employees employees = new Employees();
+        List<Employees> listemp = employeesDAO.getAll();
+        System.out.println(listemp);
+        req.setAttribute("listemp",listemp);
+        req.getRequestDispatcher("/WEB-INF/admin/nhanvien.jsp").forward(req, resp);
+    }
 
 }

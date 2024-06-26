@@ -1,6 +1,6 @@
 package com.quach.shop_giay.model;
 
-public class employees {
+public class Employees {
     private String idEmploye;
     private Account taikhoan;
     private String fullname;
@@ -11,7 +11,7 @@ public class employees {
     private String email;
     private double luong;
 
-    public employees(String idEmploye, Account taikhoan, String fullname, String address, int age, String gender, String phone, String email, double luong) {
+    public Employees(String idEmploye, Account taikhoan, String fullname, String address, int age, String gender, String phone, String email, double luong) {
         this.idEmploye = idEmploye;
         this.taikhoan = taikhoan;
         this.fullname = fullname;
@@ -23,7 +23,7 @@ public class employees {
         this.luong = luong;
     }
 
-    public employees() {
+    public Employees() {
     }
 
     public String getIdEmploye() {
