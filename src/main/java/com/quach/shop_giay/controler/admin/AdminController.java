@@ -1,6 +1,8 @@
 package com.quach.shop_giay.controler.admin;
 import com.quach.shop_giay.database.OrderDAO;
+import com.quach.shop_giay.database.UserDAO;
 import com.quach.shop_giay.model.Order;
+import com.quach.shop_giay.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -36,7 +38,7 @@ public class AdminController extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/admin/nhanvien.jsp").forward(req, resp);
             return;
         }else if("khachhang".equals(url)){
-            req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
+            showUsers(req,resp);
             return;
         }else if("taikhoan".equals(url)){
             req.getRequestDispatcher("/WEB-INF/admin/taikhoan.jsp").forward(req, resp);
@@ -55,6 +57,23 @@ public class AdminController extends HttpServlet {
         req.setAttribute("listOrders",listOrders);
         req.getRequestDispatcher("/WEB-INF/admin/donhang.jsp").forward(req, resp);
     }
+
+    private void showUsers(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
+        UserDAO userDAO=new UserDAO();
+        List<User> listUsers = userDAO.getAll();
+        System.out.println(listUsers);
+        req.setAttribute("listUsers",listUsers);
+        req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
+
+    }
+
+//    private  void showTaikhoan(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
+//        Taikho userDAO=new UserDAO();
+//        List<User> listUsers = userDAO.getAll();
+//        System.out.println(listUsers);
+//        req.setAttribute("listUsers",listUsers);
+//        req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
+//    }
 
 
 }

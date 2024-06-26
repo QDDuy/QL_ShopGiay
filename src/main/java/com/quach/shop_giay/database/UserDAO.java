@@ -26,7 +26,8 @@ public class UserDAO implements DAOInterface<User> {
                 String phone = rs.getString("phone");
                 String avatar = rs.getString("avatar");
                 String accountId = rs.getString("id_taikhoan");
-                Account account = new Account(accountId, "", "");
+                Account account = new Account();
+                account.setAccountId(accountId);
                 User user = new User(userId, account, email, fullName, address, phone,avatar);
                 ketqua.add(user);
             }
