@@ -20,15 +20,14 @@ public class UserDAO implements DAOInterface<User> {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 String userId = rs.getString("user_id");
-                String accountId = rs.getString("account_id");
                 String email = rs.getString("email");
                 String fullName = rs.getString("fullname");
                 String address = rs.getString("address");
                 String phone = rs.getString("phone");
-                String role = rs.getString("role");
                 String avatar = rs.getString("avatar");
+                String accountId = rs.getString("id_taikhoan");
                 Account account = new Account(accountId, "", "");
-                User user = new User(userId, account, email, fullName, address, phone, role, avatar);
+                User user = new User(userId, account, email, fullName, address, phone,avatar);
                 ketqua.add(user);
             }
             JDBCUtil.closeConnection(conn);
@@ -36,6 +35,11 @@ public class UserDAO implements DAOInterface<User> {
             e.printStackTrace();
         }
         return ketqua;
+    }
+    public static void main(String[] args) {
+
+        UserDAO userDAO=new UserDAO();
+        System.out.println(userDAO.getAll());
     }
 
     @Override
@@ -54,11 +58,10 @@ public class UserDAO implements DAOInterface<User> {
                 String fullName = rs.getString("fullname");
                 String address = rs.getString("address");
                 String phone = rs.getString("phone");
-                String role = rs.getString("role");
                 String avatar = rs.getString("avatar");
                 Account account=new Account();
                 account.setAccountId(accountId);
-                ketqua = new User(userId, account, email, fullName, address, phone, role, avatar);
+                ketqua = new User(userId, account, email, fullName, address, phone, avatar);
                 break;
             }
             JDBCUtil.closeConnection(conn);
@@ -67,7 +70,6 @@ public class UserDAO implements DAOInterface<User> {
         }
         return ketqua;
     }
-
 
 
 
@@ -83,8 +85,7 @@ public class UserDAO implements DAOInterface<User> {
             st.setString(5, user.getFullName());
             st.setString(6, user.getAddress());
             st.setString(7, user.getPhone());
-            st.setString(8, user.getRole());
-            st.setString(9, user.getAvatar());
+            st.setString(8, user.getAvatar());
             ketqua = st.executeUpdate();
             JDBCUtil.closeConnection(conn);
 
@@ -135,15 +136,14 @@ public class UserDAO implements DAOInterface<User> {
         int ketqua = 0;
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "UPDATE users SET account_id=? ,email=?,fullname=?, address=?, phone=?, role=? WHERE user_id=?";
+            String sql = "UPDATE users SET account_id=? ,email=?,fullname=?, address=?, phone=?,  WHERE user_id=?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1,user.getAccount().getAccountId());
             st.setString(2, user.getEmail());
             st.setString(3, user.getFullName());
             st.setString(4, user.getAddress());
             st.setString(5, user.getPhone());
-            st.setString(6, user.getRole());
-            st.setString(7, user.getUserId());
+            st.setString(6, user.getUserId());
             ketqua = st.executeUpdate();
             JDBCUtil.closeConnection(conn);
 

@@ -11,7 +11,7 @@ public class JDBCUtil {
             // Register the MySQL JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Define the connection URL, user and password
-            String url = "jdbc:mysql://localhost:3306/demo";
+            String url = "jdbc:mysql://localhost:3306/shop_giay";
             String user = "qdduy";
             String pass = "Duy1762003";
             // Establish the connection

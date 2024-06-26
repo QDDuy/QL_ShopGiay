@@ -17,7 +17,7 @@ public class OrderDAO implements DAOInterface<Order> {
         ArrayList<Order> ketqua = new ArrayList<>();
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "SELECT *FORM orders";
+            String sql = "SELECT *FROM orders";
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -26,7 +26,8 @@ public class OrderDAO implements DAOInterface<Order> {
                 Date orderDate = rs.getDate("order_date");
                 double totalAmount = rs.getDouble("total_amount");
                 String orderStatus = rs.getString("order_status");
-                User user = new UserDAO().getId(new User(userId,new Account(), "", "", "", "", "",""));
+                User user = new User();
+                user.setUserId(userId);
                 Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
                 ketqua.add(order);
             }
@@ -36,6 +37,17 @@ public class OrderDAO implements DAOInterface<Order> {
         return ketqua;
     }
 
+    public static void main(String[] args) {
+        OrderDAO orderDAO = new OrderDAO();
+        ArrayList<Order> orders = orderDAO.getAll();
+        if (orders.isEmpty()) {
+            System.out.println("No orders found.");
+        } else {
+            for (Order order : orders) {
+                System.out.println(order);
+            }
+        }
+    }
     @Override
     public Order getId(Order order) {
         Order ketqua = null;
@@ -51,7 +63,7 @@ public class OrderDAO implements DAOInterface<Order> {
                 Date orderDate = rs.getDate("order_date");
                 double totalAmount = rs.getDouble("total_amount");
                 String orderStatus = rs.getString("order_status");
-                User user = new UserDAO().getId(new User(userId, new Account(), "", "", "", "", "",""));
+                User user = new UserDAO().getId(new User(userId, new Account(), "", "", "", "", ""));
                 ketqua = new Order(orderId, user, orderDate, totalAmount, orderStatus);
             }
         } catch (Exception e) {
@@ -59,6 +71,7 @@ public class OrderDAO implements DAOInterface<Order> {
         }
         return ketqua;
     }
+
 
     @Override
     public int insert(Order order) {

@@ -26,7 +26,7 @@ public class ShoppingCartDAO implements DAOInterface<ShoppingCart> {
                 String userId = rs.getString("user_id");
                 String productId = rs.getString("product_id");
                 int quantity = rs.getInt("quantity");
-                User user = new UserDAO().getId(new User(userId,new Account(), "", "", "", "", "",""));
+                User user = new UserDAO().getId(new User(userId,new Account(), "", "", "", "",""));
                 Product product = new ProductDAO().getId(new Product(productId, "", "", 0, null, null, ""));
                 ShoppingCart shoppingCart = new ShoppingCart(cartId, user, product, quantity);
                 ketqua.add(shoppingCart);
@@ -51,7 +51,7 @@ public class ShoppingCartDAO implements DAOInterface<ShoppingCart> {
                 String cartId = rs.getString("cart_id");
                 String productId = rs.getString("product_id");
                 int quantity = rs.getInt("quantity");
-                User user = new UserDAO().getId(new User(userId,new Account(),  "", "", "", "", "",""));
+                User user = new UserDAO().getId(new User(userId,new Account(),  "", "", "", "", ""));
                 Product product = new ProductDAO().getId(new Product(productId, "", "", 0, null, null, ""));
                 ShoppingCart shoppingCart = new ShoppingCart(cartId, user, product, quantity);
                 ketqua.add(shoppingCart);
@@ -133,7 +133,7 @@ public class ShoppingCartDAO implements DAOInterface<ShoppingCart> {
                 String cartId = rs.getString("cart_id");
                 String productId = rs.getString("product_id");
                 int quantity = rs.getInt("quantity");
-                User user = new UserDAO().getId(new User(userId, new Account(), "", "", "", "", "",""));
+                User user = new UserDAO().getId(new User(userId, new Account(), "", "", "", "", ""));
                 Product product = new ProductDAO().getId(new Product(productId, "", "", 0, null, null, ""));
                 ketqua = new ShoppingCart(cartId, user, product, quantity);
             }
@@ -155,7 +155,7 @@ public class ShoppingCartDAO implements DAOInterface<ShoppingCart> {
             while (rs.next()) {
                 String cartId = rs.getString("cart_id");
                 int quantity = rs.getInt("quantity");
-                User user = new UserDAO().getId(new User(userId,new Account(), "", "", "", "", "",""));
+                User user = new UserDAO().getId(new User(userId,new Account(), "", "", "", "", ""));
                 Product product = new ProductDAO().getId(new Product(productId, "", "", 0, null, null, ""));
                 ketqua = new ShoppingCart(cartId, user, product, quantity);
             }

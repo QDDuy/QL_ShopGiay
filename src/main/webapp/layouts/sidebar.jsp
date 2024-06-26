@@ -154,7 +154,7 @@
                     </div>
                 </li><li class="nav-item">
                 <a data-bs-toggle="collapse" href="#taikhoan">
-                    <i class="far fa-chart-bar"></i>
+                    <i class="fa-solid fa-user"></i>
                     <p>Quản lý Tài khoản</p>
                     <span class="caret"></span>
                 </a>
