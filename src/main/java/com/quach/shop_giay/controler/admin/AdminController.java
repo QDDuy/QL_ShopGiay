@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 
@@ -89,38 +90,83 @@ public class AdminController extends HttpServlet {
     private void deleteOrder(HttpServletRequest req, HttpServletResponse resp, Order order) throws ServletException, IOException {
         OrderDAO orderDAO = new OrderDAO();
         orderDAO.delete(order);
-        resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
-    }
-    private void createOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Random rd = new Random();
-        String orderId = "DH" + System.currentTimeMillis() + rd.nextInt(1000);
-        String userId = req.getParameter("userId");
-        Date orderDate = Date.valueOf(req.getParameter("order_date"));
-        double totalAmount = Double.parseDouble(req.getParameter("totalAmount"));
-        String orderStatus = req.getParameter("orderStatus");
+        req.getSession().setAttribute("successMessage", "Đã xoá đơn hàng thành công!");
 
-        User user = new User();
-        user.setUserId(userId);
-        Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
-        OrderDAO orderDAO = new OrderDAO();
-        orderDAO.insert(order);
         resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
     }
+
+    private void createOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String orderId;
+        try {
+            Random rd = new Random();
+            orderId = "DH" + System.currentTimeMillis() + rd.nextInt(1000);
+            String userId = req.getParameter("userId");
+
+            // Kiểm tra userId có hợp lệ không (ví dụ: tồn tại trong cơ sở dữ liệu)
+            UserDAO userDAO = new UserDAO();
+
+            User user = new User();
+            user.setUserId(userId);
+
+            if (userDAO.getId(user) == null) {
+                req.getSession().setAttribute("errorMessage", "User ID không hợp lệ. Vui lòng nhập lại.");
+                return;
+            }
+            Date orderDate = Date.valueOf(req.getParameter("order_date"));
+            double totalAmount = Double.parseDouble(req.getParameter("totalAmount"));
+            String orderStatus = req.getParameter("orderStatus");
+
+            // Tạo đối tượng Order và thêm vào cơ sở dữ liệu
+            Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
+            OrderDAO orderDAO = new OrderDAO();
+            orderDAO.insert(order);
+
+            // Nếu thành công, đặt thông báo thành công vào session
+            req.getSession().setAttribute("successMessage", "Đã thêm đơn hàng thành công!");
+
+        } catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
+            e.printStackTrace();
+        } finally {
+            // Chuyển hướng người dùng về trang quản lý đơn hàng
+            resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
+        }
+    }
+
 
     private void editOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String orderId = req.getParameter("orderId");
-        String userId = req.getParameter("userId");
-        Date orderDate = Date.valueOf(req.getParameter("orderDate"));
-        double totalAmount = Double.parseDouble(req.getParameter("totalAmount"));
-        String orderStatus = req.getParameter("orderStatus");
-        OrderDAO orderDAO = new OrderDAO();
-        User user = new User();
-        user.setUserId(userId);
-        Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
-        orderDAO.update(order);
-        resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
+        try {
+            String orderId = req.getParameter("orderId");
+            String userId = req.getParameter("userId");
+            Date orderDate = Date.valueOf(req.getParameter("orderDate"));
+            double totalAmount = Double.parseDouble(req.getParameter("totalAmount"));
+            String orderStatus = req.getParameter("orderStatus");
 
+            // Kiểm tra userId có hợp lệ không
+            UserDAO userDAO = new UserDAO();
+            User user = new User();
+            user.setUserId(userId);
+
+            // Kiểm tra userId trong cơ sở dữ liệu
+            if (userDAO.getId(user) == null) {
+                req.getSession().setAttribute("errorMessage", "User ID không hợp lệ. Vui lòng nhập lại.");
+            } else {
+                Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
+                OrderDAO orderDAO = new OrderDAO();
+                orderDAO.update(order);
+
+                // Nếu thành công, đặt thông báo thành công vào session
+                req.getSession().setAttribute("successMessage", "Đã update đơn hàng thành công!");
+            }
+        } catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi update đơn hàng. Vui lòng thử lại sau.");
+            e.printStackTrace();
+        } finally {
+            // Chuyển hướng người dùng về trang quản lý đơn hàng
+            resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
+        }
     }
+
     private void showTaikhoan(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountDAO accountDAO = new AccountDAO();
         Account account = new Account();
