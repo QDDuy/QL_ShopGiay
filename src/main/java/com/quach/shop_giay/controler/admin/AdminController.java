@@ -8,6 +8,7 @@ import com.quach.shop_giay.model.Account;
 import com.quach.shop_giay.model.Employees;
 import com.quach.shop_giay.model.Order;
 import com.quach.shop_giay.model.User;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -70,6 +71,11 @@ public class AdminController extends HttpServlet {
             Account account = new Account();
             account.setAccountId(accountId);
             deleteAccount(req, resp, account);
+        }else if("deleteUser".equals(url)){
+            String userId = req.getParameter("id_user");
+            User user = new User();
+            user.setUserId(userId);
+            deleteUser(req, resp, user);
         }
         req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
     }
@@ -91,6 +97,8 @@ public class AdminController extends HttpServlet {
             editAccount(req, resp);
         }else if("createUser".equals(action)){
             createUser(req, resp);
+        }else if("editUser".equals(action)){
+            editUser(req, resp);
         }
     }
 
@@ -133,7 +141,6 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
         }
     }
-
     private void editOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String orderId = req.getParameter("orderId");
         String userId = req.getParameter("userId");
@@ -147,7 +154,6 @@ public class AdminController extends HttpServlet {
         orderDAO.update(order);
         resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
     }
-
     private void showTaikhoan(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountDAO accountDAO = new AccountDAO();
         Account account = new Account();
@@ -182,7 +188,6 @@ public class AdminController extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/admin?url=taikhoan");
 
     }
-
     private void editAccount(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String accountId = req.getParameter("accountId");
         String username = req.getParameter("username");
@@ -208,8 +213,6 @@ public class AdminController extends HttpServlet {
             resp.getWriter().println("Failed to update account.");
         }
     }
-
-
     private void showUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserDAO userDAO = new UserDAO();
         List<User> listUsers = userDAO.getAll();
@@ -217,18 +220,15 @@ public class AdminController extends HttpServlet {
         req.setAttribute("listUsers", listUsers);
         req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
     }
-
     private void createUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Random rd = new Random();
-        String userId = "NV" + System.currentTimeMillis() + rd.nextInt(1000);// Phương thức để sinh mã người dùng ngẫu nhiên, bạn có thể triển khai riêng
+        String userId = "KH" + System.currentTimeMillis() + rd.nextInt(1000);
         String accountId = req.getParameter("accountId");
         String email = req.getParameter("email");
         String fullname = req.getParameter("fullname");
         String address = req.getParameter("address");
         String phone = req.getParameter("phone");
         String avatar = req.getParameter("avatar");
-
-        // Tạo đối tượng User từ thông tin nhận được
         User newUser = new User();
         newUser.setUserId(userId);
         newUser.setEmail(email);
@@ -236,25 +236,44 @@ public class AdminController extends HttpServlet {
         newUser.setAddress(address);
         newUser.setPhone(phone);
         newUser.setAvatar(avatar);
-
-        // Tạo đối tượng Account và đặt accountId
         Account newAccount = new Account();
         newAccount.setAccountId(accountId);
-        newUser.setAccount(newAccount); // Đặt đối tượng Account cho User
-
-        // Gọi DAO để thực hiện chèn User vào cơ sở dữ liệu
+        newUser.setAccount(newAccount);
         UserDAO userDAO = new UserDAO();
         int insertedRows = userDAO.insert(newUser);
-
         if (insertedRows > 0) {
-            // Chèn thành công, điều hướng hoặc thông báo thành công
             resp.sendRedirect(req.getContextPath() + "/admin?url=khachhang");
         } else {
-            // Chèn thất bại, điều hướng hoặc thông báo lỗi
             resp.sendRedirect(req.getContextPath() + "/error.jsp");
         }
     }
+    private  void deleteUser(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
+        UserDAO userDAO = new UserDAO();
+        userDAO.delete(user);
+        resp.sendRedirect(req.getContextPath() + "/admin?url=khachhang");
+    }
 
+    private void editUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        String userId = req.getParameter("id_user");
+        String accountId = req.getParameter("id_taikhoan");
+        String fullName = req.getParameter("fullname");
+        String email = req.getParameter("email");
+        String address = req.getParameter("address");
+        String phone = req.getParameter("phone");
+        User user = new User();
+        user.setUserId(userId);
+        Account account = new Account();
+        account.setAccountId(accountId);
+        user.setAccount(account);
+        user.setFullName(fullName);
+        user.setEmail(email);
+        user.setAddress(address);
+        user.setPhone(phone);
+        UserDAO userDAO = new UserDAO();
+        resp.sendRedirect(req.getContextPath() + "/admin?url=khachhang");
+        System.out.println(userDAO.update(user));
+    }
     private void showEmployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         EmployeesDAO employeesDAO = new EmployeesDAO();
         Employees employees = new Employees();
@@ -263,13 +282,11 @@ public class AdminController extends HttpServlet {
         req.setAttribute("listemp", listemp);
         req.getRequestDispatcher("/WEB-INF/admin/nhanvien.jsp").forward(req, resp);
     }
-
     private  void deleteEmployee(HttpServletRequest req, HttpServletResponse resp, Employees employees) throws ServletException, IOException {
         EmployeesDAO employeesDAO = new EmployeesDAO();
         employeesDAO.delete(employees);
         resp.sendRedirect(req.getContextPath() + "/admin?url=nhanvien");
     }
-
     private void createEmployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Random rd = new Random();
         String idEmploye = "NV" + System.currentTimeMillis() + rd.nextInt(1000); // Tạo mã nhân viên ngẫu nhiên

@@ -112,18 +112,17 @@ public class UserDAO implements DAOInterface<User> {
         int ketqua = 0;
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "DELETE FORM users WHERE user_id=?";
+            String sql = "DELETE FROM users WHERE user_id=?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, user.getUserId());
-
             ketqua = st.executeUpdate();
-
             JDBCUtil.closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ketqua;
     }
+
 
     @Override
     public int deleteAll(ArrayList<User> arr) {
@@ -158,7 +157,6 @@ public class UserDAO implements DAOInterface<User> {
 
     public static void main(String[] args) {
         UserDAO userDAO = new UserDAO(); // Khởi tạo DAO của User
-
         // Tạo một đối tượng User mới để chèn vào cơ sở dữ liệu
         User newUser = new User();
         newUser.setUserId("U001");

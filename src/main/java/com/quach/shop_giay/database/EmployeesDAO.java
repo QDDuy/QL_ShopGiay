@@ -95,22 +95,16 @@ public class EmployeesDAO  implements  DAOInterface<Employees>{
             ps.setDouble(9, employees.getLuong());
 
             ketqua = ps.executeUpdate(); // Execute the insert statement
-
-            // If ketqua > 0, it means insertion was successful
             System.out.println("Inserted " + ketqua + " row(s) into employee table.");
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Print the stack trace for debugging SQL exceptions
-            // Handle specific SQL exceptions here (e.g., constraint violations)
+            e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace(); // Print the stack trace for unexpected exceptions
+            e.printStackTrace();
         } finally {
-            // Close PreparedStatement and Connection in finally block to ensure they're always closed
-
             JDBCUtil.closeConnection(conn);
         }
-
-        return ketqua; // Return the result of the insertion operation
+        return ketqua;
     }
 
 
