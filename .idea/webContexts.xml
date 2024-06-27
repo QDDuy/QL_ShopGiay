@@ -3,20 +3,7 @@
   <component name="WebContextManager">
     <option name="state">
       <map>
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/admin/admin.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/admin" />
-<<<<<<< HEAD
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/admin/donhang.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/admin" />
-=======
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/admin/khachhang.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/admin" />
->>>>>>> 29b0c6a4cbc125fe107917347a4a0075856bef84
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/login.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user/contact.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user/cs.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user/login.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user/myweb.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user/register.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/user" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/index.jsp" value="file://$PROJECT_DIR$/src/main/webapp" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/layouts/header.jsp" value="file://$PROJECT_DIR$/src/main/webapp/layouts" />
       </map>
     </option>
   </component>
