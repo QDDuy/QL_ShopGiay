@@ -213,10 +213,15 @@ public class AdminController extends HttpServlet {
         }
     }
     private void deleteAccount(HttpServletRequest req, HttpServletResponse resp, Account account) throws ServletException, IOException {
+        System.out.println("Account ID to delete: " + account.getAccountId());
         AccountDAO accountDAO = new AccountDAO();
         int result = accountDAO.delete(account);
+        if(result > 0) {
+            System.out.println("Account deleted successfully.");
+        } else {
+            System.out.println("Failed to delete account.");
+        }
         resp.sendRedirect(req.getContextPath() + "/admin?url=taikhoan");
-
     }
 
     private void editAccount(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
