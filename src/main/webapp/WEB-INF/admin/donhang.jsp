@@ -436,12 +436,12 @@
 
         <div class="container">
             <div class="page-inner">
-<%--                <%--%>
-<%--                    String message = request.getAttribute("successMessage").toString();--%>
-<%--                    if (!message.isEmpty()) {--%>
-<%--                %>--%>
-<%--                <p><%=message%></p>--%>
-<%--                <%}%>--%>
+                <%--                <%--%>
+                <%--                    String message = request.getAttribute("successMessage").toString();--%>
+                <%--                    if (!message.isEmpty()) {--%>
+                <%--                %>--%>
+                <%--                <p><%=message%></p>--%>
+                <%--                <%}%>--%>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">

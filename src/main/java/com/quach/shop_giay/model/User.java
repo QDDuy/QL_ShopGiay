@@ -45,36 +45,12 @@ public class User {
         this.userId = userId;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getPhone() {
@@ -85,14 +61,36 @@ public class User {
         this.phone = phone;
     }
 
-
-
-    public String getAvatar() {
-        return avatar;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     @Override
