@@ -162,7 +162,7 @@
                 <div class="collapse" id="taikhoan">
                     <ul class="nav nav-collapse">
                         <li>
-                            <a href="admin?url=khachhang">
+                            <a href="admin?url=taikhoan">
                                 <span class="sub-item">Tài khoản</span>
                             </a>
                         </li>

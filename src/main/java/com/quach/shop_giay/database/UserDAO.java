@@ -77,25 +77,31 @@ public class UserDAO implements DAOInterface<User> {
 
     @Override
     public int insert(User user) {
-        int ketqua = 0;
+        int ketqua = 0; // Initialize result to 0 (indicating failure) by default
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "INSERT INTO users (user_id,account_id,email,fullname,address,phone,role,avatar) VALUES(?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO users (user_id, email, fullname, address, phone, avatar, id_taikhoan) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, user.getUserId());
-            st.setString(4, user.getEmail());
-            st.setString(5, user.getFullName());
-            st.setString(6, user.getAddress());
-            st.setString(7, user.getPhone());
-            st.setString(8, user.getAvatar());
-            ketqua = st.executeUpdate();
-            JDBCUtil.closeConnection(conn);
-
+            st.setString(2, user.getEmail());
+            st.setString(3, user.getFullName());
+            st.setString(4, user.getAddress());
+            st.setString(5, user.getPhone());
+            st.setString(6, user.getAvatar());
+            st.setString(7, user.getAccount().getAccountId()); // Assuming user.getAccountID() returns the account ID
+            ketqua = st.executeUpdate(); // Execute the insert statement
+            // If ketqua > 0, it means insertion was successful
+            System.out.println("Inserted " + ketqua + " row(s) into users table.");
+            JDBCUtil.closeConnection(conn); // Close connection after use
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the stack trace for debugging SQL exceptions
+            // Handle specific SQL exceptions here (e.g., constraint violations)
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Print the stack trace for unexpected exceptions
         }
-        return ketqua;
+        return ketqua; // Return the result of the insertion operation
     }
+
 
     @Override
     public int insertAll(ArrayList<User> arr) {
@@ -154,6 +160,7 @@ public class UserDAO implements DAOInterface<User> {
         }
         return ketqua;
     }
+
 
 
 

@@ -1,5 +1,7 @@
 package com.quach.shop_giay.model;
 
+import java.util.Objects;
+
 public class Employees {
     private String idEmploye;
     private Account taikhoan;
@@ -99,6 +101,19 @@ public class Employees {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employees employees = (Employees) o;
+        return age == employees.age && Double.compare(luong, employees.luong) == 0 && Objects.equals(idEmploye, employees.idEmploye) && Objects.equals(taikhoan, employees.taikhoan) && Objects.equals(fullname, employees.fullname) && Objects.equals(address, employees.address) && Objects.equals(gender, employees.gender) && Objects.equals(phone, employees.phone) && Objects.equals(email, employees.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idEmploye, taikhoan, fullname, address, age, gender, phone, email, luong);
+    }
+
+    @Override
     public String toString() {
         return "employees{" +
                 "idEmploye='" + idEmploye + '\'' +
@@ -112,6 +127,8 @@ public class Employees {
                 ", luong=" + luong +
                 '}';
     }
+
+
 }
 
 

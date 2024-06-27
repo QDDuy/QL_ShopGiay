@@ -498,47 +498,83 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        <p class="small">
-                          Create a new row using this form, make sure you
-                          fill them all
-                        </p>
-                        <form>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <div class="form-group form-group-default">
-                                <label>Name</label>
-                                <input
-                                        id="addName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill name"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
-                              <div class="form-group form-group-default">
-                                <label>Position</label>
-                                <input
-                                        id="addPosition"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill position"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"
-                                />
+                        <form method="post" action="admin">
+                          <input type="hidden" name="action" value="createUser" />
+                          <div class="modal-body">
+                            <p class="small">
+                              Create a new employee using this form, make sure you fill them all
+                            </p>
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <div class="form-group form-group-default">
+                                  <label>Account ID</label>
+                                  <input
+                                          id="accountId"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Account ID"
+                                          name="accountId"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Full Name</label>
+                                  <input
+                                          id="fullname"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Full Name"
+                                          name="fullname"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Address</label>
+                                  <input
+                                          id="address"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Address"
+                                          name="address"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Phone</label>
+                                  <input
+                                          id="phone"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Phone"
+                                          name="phone"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Email</label>
+                                  <input
+                                          id="email"
+                                          type="email"
+                                          class="form-control"
+                                          placeholder="Email"
+                                          name="email"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Avatar</label>
+                                  <input
+                                          id="avatar"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Avatar URL"
+                                          name="avatar"
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <div class="modal-footer border-0">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                          </div>
                         </form>
+
                       </div>
                       <div class="modal-footer border-0">
                         <button
@@ -567,18 +603,26 @@
                   >
                     <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th style="width: 10%">Action</th>
+                      <th>Avatar</th>
+                      <th>ID User</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th>Fhone</th>
+                      <th style="width: 10%">ID ACC</th>
+                      <th>Control</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Action</th>
+                      <th>Avatar</th>
+                      <th>ID User</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th>Fhone</th>
+                      <th>ID ACC</th>
+                      <th>Control</th>
                     </tr>
                     </tfoot>
                     <tbody>
@@ -587,7 +631,7 @@
                         for (User user : listUsers) {
                     %>
                     <tr>
-                      <td><img src="../../img/avatar<%= user.getAvatar() %> "></td>
+                      <td><img src="<%= user.getAvatar() %>" style="max-width: 50px; max-height: 50px;"></td>
                       <td><%= user.getUserId()%></td>
                       <td><%= user.getFullName() %></td>
                       <td><%= user.getEmail() %></td>

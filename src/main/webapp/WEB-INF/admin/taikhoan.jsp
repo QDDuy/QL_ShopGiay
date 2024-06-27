@@ -1,4 +1,5 @@
-
+<%@ page import="com.quach.shop_giay.model.Account" %>
+<%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -501,60 +502,72 @@
                           Create a new row using this form, make sure you
                           fill them all
                         </p>
-                        <form>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <div class="form-group form-group-default">
-                                <label>Name</label>
-                                <input
-                                        id="addName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill name"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
-                              <div class="form-group form-group-default">
-                                <label>Position</label>
-                                <input
-                                        id="addPosition"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill position"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"
-                                />
+                        <form method="post" action="admin">
+                          <input type="hidden" name="action" value="createAccount" />
+                          <div class="modal-body">
+                            <p class="small">
+                              Create a new account using this form, make sure you fill them all.
+                            </p>
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <div class="form-group form-group-default">
+                                  <label>Account ID</label>
+                                  <input
+                                          id="accountId"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Account ID"
+                                          name="accountId"
+                                          required
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Username</label>
+                                  <input
+                                          id="username"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Username"
+                                          name="username"
+                                          required
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Password</label>
+                                  <input
+                                          id="password"
+                                          type="password"
+                                          class="form-control"
+                                          placeholder="Password"
+                                          name="password"
+                                          required
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Role</label>
+                                  <select
+                                          id="role"
+                                          class="form-control"
+                                          name="role"
+                                          required
+                                  >
+                                    <option value="">Select Role</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="employee">Employee</option>
+                                    <option value="manager">Manager</option>
+                                  </select>
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <div class="modal-footer border-0">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                          </div>
                         </form>
-                      </div>
-                      <div class="modal-footer border-0">
-                        <button
-                                type="submit"
-                                class="btn btn-primary"
 
-                        >
-                          Add
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-danger"
-                                data-dismiss="modal"
-                        >
-                          Close
-                        </button>
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -566,291 +579,97 @@
                   >
                     <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th style="width: 10%">Action</th>
+                      <th>ID ACC</th>
+                      <th>User Name</th>
+                      <th>Password</th>
+                      <th style="width: 10%">Role</th>
+                      <th>Control</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Action</th>
+                      <th>ID ACC</th>
+                      <th>User Name</th>
+                      <th>Password</th>
+                      <th>Role</th>
+                      <th>Control</th>
                     </tr>
                     </tfoot>
                     <tbody>
+                    <% List<Account> listacc = (List<Account>) request.getAttribute("listacc");
+                      if (listacc != null && !listacc.isEmpty()) {
+                        for (Account acc : listacc) {
+                    %>
                     <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
+                      <td><%= acc.getAccountId() %></td>
+                      <td><%= acc.getUserName() %></td>
+                      <td><%= acc.getPassword() %></td>
+                      <td><%= acc.getRole() %></td>
                       <td>
                         <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="action" value="deleteAccount" />
+                            <input type="hidden" name="accountId" value="<%= acc.getAccountId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Chỉnh sửa" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editAccount<%= acc.getAccountId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
+
+                          <div class="modal fade" id="editAccount<%= acc.getAccountId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Chỉnh sửa</span>
+                                    <span class="fw-light">Tài khoản</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="${pageContext.request.contextPath}/admin">
+                                  <input type="hidden" name="action" value="editAccount" />
+                                  <input type="hidden" name="accountId" value="<%= acc.getAccountId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Chỉnh sửa thông tin tài khoản</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Tên tài khoản</label>
+                                          <input type="text" class="form-control" name="username" value="<%= acc.getUserName() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Mật khẩu</label>
+                                          <input type="password" class="form-control" name="password" value="<%= acc.getPassword() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Vai trò</label>
+                                          <input type="text" class="form-control" name="role" value="<%= acc.getRole() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
+                    <% } // end for loop
+                    } else { // if listacc is null or empty
+                    %>
                     <tr>
-                      <td>Garrett Winters</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
+                      <td colspan="5">Không có tài khoản nào.</td>
                     </tr>
-                    <tr>
-                      <td>Ashton Cox</td>
-                      <td>Junior Technical Author</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Cedric Kelly</td>
-                      <td>Senior Javascript Developer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Airi Satou</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Brielle Williamson</td>
-                      <td>Integration Specialist</td>
-                      <td>New York</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Herrod Chandler</td>
-                      <td>Sales Assistant</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Rhona Davidson</td>
-                      <td>Integration Specialist</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Colleen Hurst</td>
-                      <td>Javascript Developer</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Sonya Frost</td>
-                      <td>Software Engineer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <% } // end if-else block
+                    %>
                     </tbody>
                   </table>
                 </div>
