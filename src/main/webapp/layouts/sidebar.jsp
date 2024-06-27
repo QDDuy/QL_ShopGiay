@@ -16,7 +16,7 @@
     <div class="sidebar-logo">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
+            <a href="home" class="logo">
                 <img
                         src="../../assets/img/kaiadmin/logo_light.svg"
                         alt="navbar brand"
@@ -152,7 +152,8 @@
 
                         </ul>
                     </div>
-                </li><li class="nav-item">
+                </li>
+                <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#taikhoan">
                     <i class="fa-solid fa-user"></i>
                     <p>Quản lý Tài khoản</p>
@@ -169,7 +170,40 @@
                     </ul>
                 </div>
             </li>
+                <li class="nav-item">
+                    <a data-bs-toggle="collapse" href="#danhmuc">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Quản lý Danh muc</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse" id="danhmuc">
+                        <ul class="nav nav-collapse">
+                            <li>
+                                <a href="admin?url=danhmuc">
+                                    <span class="sub-item">Danh Mục</span>
+                                </a>
+                            </li>
 
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a data-bs-toggle="collapse" href="#brand">
+                        <i class="fa-solid fa-user"></i>
+                        <p>Quản lý Hãng</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse" id="brand">
+                        <ul class="nav nav-collapse">
+                            <li>
+                                <a href="admin?url=brand">
+                                    <span class="sub-item">Hãng</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#forms">
                         <i class="fas fa-pen-square"></i>

@@ -9,10 +9,11 @@ public class Account {
     public Account() {
     }
 
-    public Account(String accountId, String userName, String password) {
+    public Account(String accountId, String userName, String password, String role) {
         this.accountId = accountId;
         this.userName = userName;
         this.password = password;
+        this.role = role;
     }
 
     public String getAccountId() {
@@ -39,12 +40,21 @@ public class Account {
         this.password = password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "accountId='" + accountId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

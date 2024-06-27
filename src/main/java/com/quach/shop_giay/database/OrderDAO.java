@@ -105,7 +105,18 @@ public class OrderDAO implements DAOInterface<Order> {
 
     @Override
     public int delete(Order order) {
-        return 0;
+      int ketqua=0;
+      try {
+          Connection conn=JDBCUtil.getConnection();
+          String sql="Delete from orders where order_id=?";
+          PreparedStatement st=conn.prepareStatement(sql);
+          st.setString(1,order.getOrderId());
+          ketqua= st.executeUpdate();
+          JDBCUtil.closeConnection(conn);
+      }catch (Exception e){
+          e.printStackTrace();
+      }
+      return ketqua;
     }
 
     @Override
@@ -115,6 +126,20 @@ public class OrderDAO implements DAOInterface<Order> {
 
     @Override
     public int update(Order order) {
-        return 0;
+        int ketqua=0;
+        try {
+            Connection conn=JDBCUtil.getConnection();
+            String sql=("Update orders set user_id=? ,order_date=?, total_amount=?,order_status=? where order_id=?");
+            PreparedStatement st= conn.prepareStatement(sql);
+            st.setString(1,order.getUser().getUserId());
+            st.setDate(2,order.getOrderDate());
+            st.setDouble(3,order.getTotalAmount());
+            st.setString(4, order.getOrderStatus());
+            st.setString(5, order.getOrderId());
+            ketqua=st.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ketqua;
     }
 }

@@ -479,8 +479,7 @@
                         id="addRowModal"
                         tabindex="-1"
                         role="dialog"
-                        aria-hidden="true"
-                >
+                        aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header border-0">
@@ -497,49 +496,67 @@
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
+                      <form method="post" action="admin">
+                        <input type="hidden" name="action" value="createOrder" />
+
                       <div class="modal-body">
                         <p class="small">
                           Create a new row using this form, make sure you
                           fill them all
                         </p>
-                        <form>
+
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group form-group-default">
-                                <label>Name</label>
+                                <label>User Id</label>
                                 <input
                                         id="addName"
                                         type="text"
                                         class="form-control"
-                                        placeholder="fill name"
+                                        placeholder="User id"
+                                        name="userId"
+                                />
+                              </div>
+                              <div class="form-group form-group-default">
+                                <label>Order date</label>
+                                <input
+                                        id="order_date"
+                                        type="date"
+                                        class="form-control"
+                                        placeholder="User id"
+                                        name="order_date"
                                 />
                               </div>
                             </div>
                             <div class="col-md-6 pe-0">
                               <div class="form-group form-group-default">
-                                <label>Position</label>
+                                <label>Total amount</label>
                                 <input
                                         id="addPosition"
                                         type="text"
                                         class="form-control"
-                                        placeholder="fill position"
+                                        placeholder="Total Amounts"
+                                        name="totalAmount"
                                 />
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-group form-group-default">
-                                <label>Office</label>
+                                <label>Order status</label>
                                 <input
                                         id="addOffice"
                                         type="text"
                                         class="form-control"
-                                        placeholder="fill office"/>
+                                        placeholder="fill office"
+                                        name="orderStatus"
+                                  />
+
                               </div>
                             </div>
                           </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer border-0">
+
+                        </div>
+                      `<div class="modal-footer border-0">
                         <button
                                 type="submit"
                                 class="btn btn-primary">
@@ -553,6 +570,7 @@
                           Close
                         </button>
                       </div>
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -589,27 +607,81 @@
                       <td><%= order.getOrderStatus() %></td>
                       <td>
                         <div class="form-button-action">
-                          <button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Sửa">
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteOrder" />
+                            <input type="hidden" name="orderId" value="<%= order.getOrderId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit Task" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editOrder<%= order.getOrderId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button type="button" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
-                            <i class="fa fa-times"></i>
-                          </button>
+
+                          <div class="modal fade" id="editOrder<%= order.getOrderId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Edit</span>
+                                    <span class="fw-light">Order</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editOrder" />
+                                  <input type="hidden" name="orderId" value="<%= order.getOrderId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Edit the details of the order</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>User Id</label>
+                                          <input type="text" class="form-control" name="userId" value="<%= order.getUser().getUserId() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Order Date</label>
+                                          <input type="date" class="form-control" name="orderDate" value="<%= order.getOrderDate() %>" />
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6 pe-0">
+                                        <div class="form-group form-group-default">
+                                          <label>Total Amount</label>
+                                          <input type="text" class="form-control" name="totalAmount" value="<%= order.getTotalAmount() %>" />
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="form-group form-group-default">
+                                          <label>Order Status</label>
+                                          <input type="text" class="form-control" name="orderStatus" value="<%= order.getOrderStatus() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
-                    <% } // end for loop
-                    } else { // if listOrders is null or empty
-                    %>
+                    <% }
+                    } else { %>
                     <tr>
                       <td colspan="5">Không có đơn hàng nào.</td>
                     </tr>
-                    <% } // end if-else block
-                    %>
+                    <% } %>
                     </tbody>
                   </table>
-
                 </div>
+
+
+              </div>
               </div>
             </div>
           </div>
