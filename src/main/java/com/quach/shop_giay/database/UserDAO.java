@@ -37,11 +37,7 @@ public class UserDAO implements DAOInterface<User> {
         }
         return ketqua;
     }
-    public static void main(String[] args) {
 
-        UserDAO userDAO=new UserDAO();
-        System.out.println(userDAO.getAll());
-    }
 
     @Override
     public User getId(User user) {
@@ -54,7 +50,7 @@ public class UserDAO implements DAOInterface<User> {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 String userId = rs.getString("user_id");
-                String accountId=rs.getString("account_id");
+                String accountId=rs.getString("id_taikhoan");
                 String email = rs.getString("email");
                 String fullName = rs.getString("fullname");
                 String address = rs.getString("address");
@@ -63,7 +59,6 @@ public class UserDAO implements DAOInterface<User> {
                 Account account=new Account();
                 account.setAccountId(accountId);
                 ketqua = new User(userId, account, email, fullName, address, phone, avatar);
-                break;
             }
             JDBCUtil.closeConnection(conn);
         } catch (Exception e) {
@@ -71,7 +66,13 @@ public class UserDAO implements DAOInterface<User> {
         }
         return ketqua;
     }
+    public static void main(String[] args) {
 
+        UserDAO userDAO=new UserDAO();
+        User user=new User();
+        user.setUserId("kh1");
+        System.out.println(userDAO.getId(user));
+    }
 
 
     @Override

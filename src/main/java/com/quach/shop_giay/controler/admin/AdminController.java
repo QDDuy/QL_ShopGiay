@@ -1,13 +1,7 @@
 package com.quach.shop_giay.controler.admin;
 
-import com.quach.shop_giay.database.AccountDAO;
-import com.quach.shop_giay.database.EmployeesDAO;
-import com.quach.shop_giay.database.OrderDAO;
-import com.quach.shop_giay.database.UserDAO;
-import com.quach.shop_giay.model.Account;
-import com.quach.shop_giay.model.Employees;
-import com.quach.shop_giay.model.Order;
-import com.quach.shop_giay.model.User;
+import com.quach.shop_giay.database.*;
+import com.quach.shop_giay.model.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +12,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
+import java.util.PrimitiveIterator;
 import java.util.Random;
 
 @WebServlet("/admin")
@@ -79,6 +75,7 @@ public class AdminController extends HttpServlet {
         }
     }
 
+//  start  Đơn hàng
     private void showListOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         OrderDAO orderDAO = new OrderDAO();
         List<Order> listOrders = orderDAO.getAll();
@@ -101,29 +98,27 @@ public class AdminController extends HttpServlet {
             Random rd = new Random();
             orderId = "DH" + System.currentTimeMillis() + rd.nextInt(1000);
             String userId = req.getParameter("userId");
-
+            System.out.println(userId);
             // Kiểm tra userId có hợp lệ không (ví dụ: tồn tại trong cơ sở dữ liệu)
             UserDAO userDAO = new UserDAO();
-
             User user = new User();
             user.setUserId(userId);
 
             if (userDAO.getId(user) == null) {
                 req.getSession().setAttribute("errorMessage", "User ID không hợp lệ. Vui lòng nhập lại.");
-                return;
+            }else {
+                Date orderDate = Date.valueOf(req.getParameter("order_date"));
+                double totalAmount = Double.parseDouble(req.getParameter("totalAmount"));
+                String orderStatus = req.getParameter("orderStatus");
+
+                // Tạo đối tượng Order và thêm vào cơ sở dữ liệu
+                Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
+                OrderDAO orderDAO = new OrderDAO();
+                orderDAO.insert(order);
+
+                // Nếu thành công, đặt thông báo thành công vào session
+                req.getSession().setAttribute("successMessage", "Đã thêm đơn hàng thành công!");
             }
-            Date orderDate = Date.valueOf(req.getParameter("order_date"));
-            double totalAmount = Double.parseDouble(req.getParameter("totalAmount"));
-            String orderStatus = req.getParameter("orderStatus");
-
-            // Tạo đối tượng Order và thêm vào cơ sở dữ liệu
-            Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
-            OrderDAO orderDAO = new OrderDAO();
-            orderDAO.insert(order);
-
-            // Nếu thành công, đặt thông báo thành công vào session
-            req.getSession().setAttribute("successMessage", "Đã thêm đơn hàng thành công!");
-
         } catch (Exception e) {
             req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
             e.printStackTrace();
@@ -147,11 +142,10 @@ public class AdminController extends HttpServlet {
             User user = new User();
             user.setUserId(userId);
 
-            // Kiểm tra userId trong cơ sở dữ liệu
-            if (userDAO.getId(user) == null) {
+            if (userDAO.getId(user).equals(null)) {
                 req.getSession().setAttribute("errorMessage", "User ID không hợp lệ. Vui lòng nhập lại.");
             } else {
-                Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
+                Order order = new Order(orderId,user, orderDate, totalAmount, orderStatus);
                 OrderDAO orderDAO = new OrderDAO();
                 orderDAO.update(order);
 
@@ -166,6 +160,19 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
         }
     }
+
+
+//    --------------------------------------------------END DON HANG---------------------------------------------------
+
+
+//--------------------------------------------------START CHI TIET DON HANG-----------------------------------------
+
+
+
+    //-----------------------------------------------END CHI TIET DON HANG------------------------------------------
+   private void showChitietDonHang(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+
+   }
 
     private void showTaikhoan(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountDAO accountDAO = new AccountDAO();
