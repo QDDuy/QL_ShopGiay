@@ -24,6 +24,19 @@ public class User {
         this.avatar = avatar;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId) && Objects.equals(account, user.account) && Objects.equals(email, user.email) && Objects.equals(fullName, user.fullName) && Objects.equals(address, user.address) && Objects.equals(phone, user.phone) && Objects.equals(avatar, user.avatar);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, account, email, fullName, address, phone, avatar);
+    }
+
     public String getUserId() {
         return userId;
     }

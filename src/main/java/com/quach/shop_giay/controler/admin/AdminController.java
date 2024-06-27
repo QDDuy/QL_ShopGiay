@@ -62,6 +62,12 @@ public class AdminController extends HttpServlet {
             order.setOrderId(orderId);
             deleteOrder(req, resp, order);
             return;
+        }else if("deleteEmployee".equals(url)){
+            String employeeId = req.getParameter("id_employe");
+            Employees employee = new Employees();
+            employee.setIdEmploye(employeeId);
+            deleteEmployee(req, resp, employee);
+            return;
         }
 
         req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
@@ -74,9 +80,13 @@ public class AdminController extends HttpServlet {
             createOrder(req, resp);
         } else if ("editOrder".equals(action)) {
             editOrder(req, resp);
-
+        }else if ("createEmployee".equals(action)) {
+            createEmployee(req, resp);
+        }else if ("editEmployee".equals(action)) {
+            editEmployee(req, resp);
         }
     }
+
 
     private void showListOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         OrderDAO orderDAO = new OrderDAO();
@@ -98,7 +108,6 @@ public class AdminController extends HttpServlet {
         Date orderDate = Date.valueOf(req.getParameter("order_date"));
         double totalAmount = Double.parseDouble(req.getParameter("totalAmount"));
         String orderStatus = req.getParameter("orderStatus");
-
         User user = new User();
         user.setUserId(userId);
         Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
@@ -119,8 +128,8 @@ public class AdminController extends HttpServlet {
         Order order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
         orderDAO.update(order);
         resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
-
     }
+
     private void showTaikhoan(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountDAO accountDAO = new AccountDAO();
         Account account = new Account();
@@ -128,7 +137,7 @@ public class AdminController extends HttpServlet {
         List<Account> listacc = accountDAO.getAll();
         System.out.println(listacc);
         req.setAttribute("listacc", listacc);
-        req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/admin/taikhoan.jsp").forward(req, resp);
     }
 
 
@@ -149,6 +158,52 @@ public class AdminController extends HttpServlet {
         req.setAttribute("listemp", listemp);
         req.getRequestDispatcher("/WEB-INF/admin/nhanvien.jsp").forward(req, resp);
     }
+
+    private  void deleteEmployee(HttpServletRequest req, HttpServletResponse resp, Employees employees) throws ServletException, IOException {
+        EmployeesDAO employeesDAO = new EmployeesDAO();
+        employeesDAO.delete(employees);
+        resp.sendRedirect(req.getContextPath() + "/admin?url=nhanvien");
+    }
+
+    private void createEmployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Random rd = new Random();
+        String idEmploye = "NV" + System.currentTimeMillis() + rd.nextInt(1000); // Tạo mã nhân viên ngẫu nhiên
+        String idAccount = req.getParameter("accountId");
+        String fullname = req.getParameter("fullname");
+        String address = req.getParameter("address");
+        int age = Integer.parseInt(req.getParameter("age"));
+        String gender = req.getParameter("gender");
+        String phone = req.getParameter("phone");
+        String email = req.getParameter("email");
+        double luong = Double.parseDouble(req.getParameter("salary"));
+        Account account = new Account();
+        account.setAccountId(idAccount);
+        Employees employees = new Employees(idEmploye, account, fullname, address, age, gender, phone, email, luong);
+        EmployeesDAO employeesDAO = new EmployeesDAO();
+        employeesDAO.insert(employees);
+        resp.sendRedirect(req.getContextPath() + "/admin?url=nhanvien");
+    }
+
+    private void editEmployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String idEmploye = req.getParameter("id_employe");
+        String idAccount = req.getParameter("id_taikhoan");
+        String fullname = req.getParameter("fullname");
+        String address = req.getParameter("address");
+        int age = Integer.parseInt(req.getParameter("age"));
+        String gender = req.getParameter("gender");
+        String phone = req.getParameter("phone");
+        String email = req.getParameter("email");
+        double luong = Double.parseDouble(req.getParameter("luong"));
+        Account account = new Account();
+        account.setAccountId(idAccount);
+        Employees employees = new Employees(idEmploye, account, fullname, address, age, gender, phone, email, luong);
+        EmployeesDAO employeesDAO = new EmployeesDAO();
+        employeesDAO.update(employees);
+        resp.sendRedirect(req.getContextPath() + "/admin?url=nhanvien");
+        System.out.println(employeesDAO.update(employees));
+    }
+
+
 
 
 

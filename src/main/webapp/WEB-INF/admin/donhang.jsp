@@ -582,6 +582,7 @@
                       <th>Mã Đơn Hàng</th>
                       <th>Mã khách hàng</th>
                       <th>Ngày đặt hàng</th>
+                      <th>TotalAmount</th>
                       <th>Trạng thái đơn hàng</th>
                       <th>Action</th>
                     </tr>
@@ -591,6 +592,7 @@
                       <th>Mã Đơn Hàng</th>
                       <th>Mã khách hàng</th>
                       <th>Ngày đặt hàng</th>
+                      <th>TotalAmount</th>
                       <th>Trạng thái đơn hàng</th>
                       <th>Action</th>
                     </tr>
@@ -604,6 +606,7 @@
                       <td><%= order.getOrderId() %></td>
                       <td><%= order.getUser().getUserId() %></td>
                       <td><%= order.getOrderDate() %></td>
+                      <td><%= order.getTotalAmount() %></td>
                       <td><%= order.getOrderStatus() %></td>
                       <td>
                         <div class="form-button-action">

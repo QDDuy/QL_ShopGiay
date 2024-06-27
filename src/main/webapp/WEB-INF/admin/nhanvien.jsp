@@ -1,4 +1,5 @@
-
+<%@ page import="com.quach.shop_giay.model.Employees" %>
+<%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -501,60 +502,105 @@
                           Create a new row using this form, make sure you
                           fill them all
                         </p>
-                        <form>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <div class="form-group form-group-default">
-                                <label>Name</label>
-                                <input
-                                        id="addName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill name"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
-                              <div class="form-group form-group-default">
-                                <label>Position</label>
-                                <input
-                                        id="addPosition"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill position"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"
-                                />
+                        <form method="post" action="admin">
+                          <input type="hidden" name="action" value="createEmployee" />
+                          <div class="modal-body">
+                            <p class="small">
+                              Create a new employee using this form, make sure you fill them all
+                            </p>
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <div class="form-group form-group-default">
+                                  <label>Account ID</label>
+                                  <input
+                                          id="accountId"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Account ID"
+                                          name="accountId"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Full Name</label>
+                                  <input
+                                          id="fullname"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Full Name"
+                                          name="fullname"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Address</label>
+                                  <input
+                                          id="address"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Address"
+                                          name="address"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Age</label>
+                                  <input
+                                          id="age"
+                                          type="number"
+                                          class="form-control"
+                                          placeholder="Age"
+                                          name="age"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Gender</label>
+                                  <input
+                                          id="gender"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Gender"
+                                          name="gender"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Phone</label>
+                                  <input
+                                          id="phone"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Phone"
+                                          name="phone"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Email</label>
+                                  <input
+                                          id="email"
+                                          type="email"
+                                          class="form-control"
+                                          placeholder="Email"
+                                          name="email"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Salary</label>
+                                  <input
+                                          id="salary"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Salary"
+                                          name="salary"
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <div class="modal-footer border-0">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                          </div>
                         </form>
-                      </div>
-                      <div class="modal-footer border-0">
-                        <button
-                                type="submit"
-                                class="btn btn-primary"
 
-                        >
-                          Add
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-danger"
-                                data-dismiss="modal"
-                        >
-                          Close
-                        </button>
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -566,291 +612,131 @@
                   >
                     <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th style="width: 10%">Action</th>
+                      <th>ID EMP</th>
+                      <th>ID ACC</th>
+                      <th>FULL name</th>
+                      <th>ADDress</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Gender</th>
+                      <th>Age</th>
+                      <th style="width: 10%">Salary</th>
+                      <th>Control</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Action</th>
+                      <th>ID EMP</th>
+                      <th>ID ACC</th>
+                      <th>Full Name</th>
+                      <th>Address</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Gender</th>
+                      <th>Age</th>
+                      <th>Salary</th>
+                      <th>Control</th>
                     </tr>
                     </tfoot>
                     <tbody>
+                    <% List<Employees> listemp = (List<Employees>) request.getAttribute("listemp");
+                      if (listemp != null && !listemp.isEmpty()) {
+                        for (Employees emp : listemp) {
+                    %>
                     <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
+                      <td><%= emp.getIdEmploye() %></td>
+                      <td><%= emp.getTaikhoan().getAccountId() %></td>
+                      <td><%= emp.getFullname() %></td>
+                      <td><%= emp.getAddress() %></td>
+                      <td><%= emp.getEmail() %></td>
+                      <td><%= emp.getPhone() %></td>
+                      <td><%= emp.getGender() %></td>
+                      <td><%= emp.getAge() %></td>
+                      <td><%= emp.getLuong() %></td>
                       <td>
                         <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteEmployee" />
+                            <input type="hidden" name="id_employe" value="<%= emp.getIdEmploye() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit Employee" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editEmployee<%= emp.getIdEmploye() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
+
+                          <div class="modal fade" id="editEmployee<%= emp.getIdEmploye() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Chỉnh sửa</span>
+                                    <span class="fw-light">Nhân viên</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editEmployee" />
+                                  <input type="hidden" name="id_employe" value="<%= emp.getIdEmploye() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Chỉnh sửa thông tin nhân viên</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Tài khoản</label>
+                                          <input type="text" class="form-control" name="id_taikhoan" value="<%= emp.getTaikhoan().getAccountId() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Họ và tên</label>
+                                          <input type="text" class="form-control" name="fullname" value="<%= emp.getFullname() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Địa chỉ</label>
+                                          <input type="text" class="form-control" name="address" value="<%= emp.getAddress() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Email</label>
+                                          <input type="email" class="form-control" name="email" value="<%= emp.getEmail() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Số điện thoại</label>
+                                          <input type="text" class="form-control" name="phone" value="<%= emp.getPhone() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Giới tính</label>
+                                          <input type="text" class="form-control" name="gender" value="<%= emp.getGender() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Tuổi</label>
+                                          <input type="number" class="form-control" name="age" value="<%= emp.getAge() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Lương</label>
+                                          <input type="number" class="form-control" name="luong" value="<%= emp.getLuong() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
+                    <% }
+                    } else { %>
                     <tr>
-                      <td>Garrett Winters</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
+                      <td colspan="10">Không có nhân viên nào.</td>
                     </tr>
-                    <tr>
-                      <td>Ashton Cox</td>
-                      <td>Junior Technical Author</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Cedric Kelly</td>
-                      <td>Senior Javascript Developer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Airi Satou</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Brielle Williamson</td>
-                      <td>Integration Specialist</td>
-                      <td>New York</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Herrod Chandler</td>
-                      <td>Sales Assistant</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Rhona Davidson</td>
-                      <td>Integration Specialist</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Colleen Hurst</td>
-                      <td>Javascript Developer</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Sonya Frost</td>
-                      <td>Software Engineer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <% } %>
+
                     </tbody>
                   </table>
                 </div>

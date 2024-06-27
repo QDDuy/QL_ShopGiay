@@ -567,18 +567,26 @@
                   >
                     <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th style="width: 10%">Action</th>
+                      <th>Avatar</th>
+                      <th>ID User</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th>Fhone</th>
+                      <th style="width: 10%">ID ACC</th>
+                      <th>Control</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Action</th>
+                      <th>Avatar</th>
+                      <th>ID User</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th>Fhone</th>
+                      <th>ID ACC</th>
+                      <th>Control</th>
                     </tr>
                     </tfoot>
                     <tbody>
