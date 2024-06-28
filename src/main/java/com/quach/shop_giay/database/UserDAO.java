@@ -37,11 +37,7 @@ public class UserDAO implements DAOInterface<User> {
         }
         return ketqua;
     }
-    public static void main(String[] args) {
 
-        UserDAO userDAO=new UserDAO();
-        System.out.println(userDAO.getAll());
-    }
 
     @Override
     public User getId(User user) {
@@ -54,7 +50,7 @@ public class UserDAO implements DAOInterface<User> {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 String userId = rs.getString("user_id");
-                String accountId=rs.getString("account_id");
+                String accountId=rs.getString("id_taikhoan");
                 String email = rs.getString("email");
                 String fullName = rs.getString("fullname");
                 String address = rs.getString("address");
@@ -63,7 +59,6 @@ public class UserDAO implements DAOInterface<User> {
                 Account account=new Account();
                 account.setAccountId(accountId);
                 ketqua = new User(userId, account, email, fullName, address, phone, avatar);
-                break;
             }
             JDBCUtil.closeConnection(conn);
         } catch (Exception e) {
@@ -76,26 +71,36 @@ public class UserDAO implements DAOInterface<User> {
 
     @Override
     public int insert(User user) {
-        int ketqua = 0;
+        int ketqua = 0; // Initialize result to 0 (indicating failure) by default
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "INSERT INTO users (user_id,account_id,email,fullname,address,phone,role,avatar) VALUES(?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO users (user_id, email, fullname, address, phone, avatar, id_taikhoan) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, user.getUserId());
-            st.setString(4, user.getEmail());
-            st.setString(5, user.getFullName());
-            st.setString(6, user.getAddress());
-            st.setString(7, user.getPhone());
-            st.setString(8, user.getAvatar());
-            ketqua = st.executeUpdate();
-            JDBCUtil.closeConnection(conn);
-
-        } catch (Exception e) {
+            st.setString(2, user.getEmail());
+            st.setString(3, user.getFullName());
+            st.setString(4, user.getAddress());
+            st.setString(5, user.getPhone());
+            st.setString(6, user.getAvatar());
+            st.setString(7, user.getAccount().getAccountId()); // Assuming user.getAccountID() returns the account ID
+            ketqua = st.executeUpdate(); // Execute the insert statement
+            // If ketqua > 0, it means insertion was successful
+            System.out.println("Inserted " + ketqua + " row(s) into users table.");
+            JDBCUtil.closeConnection(conn); // Close connection after use
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ketqua;
+        return ketqua; // Return the result of the insertion operation
     }
 
+    public static void main(String[] args) {
+
+        UserDAO userDAO=new UserDAO();
+        Account account=new Account();
+        account.setAccountId("tk1");
+        User user=new User("user3",account,"abac","","","","");
+        System.out.println(userDAO.insert(user));
+    }
     @Override
     public int insertAll(ArrayList<User> arr) {
         int ketqua = 0;
@@ -148,23 +153,6 @@ public class UserDAO implements DAOInterface<User> {
             ketqua = st.executeUpdate();
             JDBCUtil.closeConnection(conn);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ketqua;
-    }
-
-
-
-    public boolean checkUserName(String userName) {
-        boolean ketqua = false;
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM users WHERE user_name=?";
-            PreparedStatement st = conn.prepareStatement(sql);
-            st.setString(1, userName);
-            ResultSet rs = st.executeQuery();
-            ketqua = rs.next(); // Trả về true nếu có bản ghi, ngược lại trả về false
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -498,47 +498,83 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        <p class="small">
-                          Create a new row using this form, make sure you
-                          fill them all
-                        </p>
-                        <form>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <div class="form-group form-group-default">
-                                <label>Name</label>
-                                <input
-                                        id="addName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill name"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
-                              <div class="form-group form-group-default">
-                                <label>Position</label>
-                                <input
-                                        id="addPosition"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill position"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"
-                                />
+                        <form method="post" action="admin">
+                          <input type="hidden" name="action" value="createUser" />
+                          <div class="modal-body">
+                            <p class="small">
+                              Create a new employee using this form, make sure you fill them all
+                            </p>
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <div class="form-group form-group-default">
+                                  <label>Account ID</label>
+                                  <input
+                                          id="accountId"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Account ID"
+                                          name="accountId"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Full Name</label>
+                                  <input
+                                          id="fullname"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Full Name"
+                                          name="fullname"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Address</label>
+                                  <input
+                                          id="address"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Address"
+                                          name="address"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Phone</label>
+                                  <input
+                                          id="phone"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Phone"
+                                          name="phone"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Email</label>
+                                  <input
+                                          id="email"
+                                          type="email"
+                                          class="form-control"
+                                          placeholder="Email"
+                                          name="email"
+                                  />
+                                </div>
+                                <div class="form-group form-group-default">
+                                  <label>Avatar</label>
+                                  <input
+                                          id="avatar"
+                                          type="text"
+                                          class="form-control"
+                                          placeholder="Avatar URL"
+                                          name="avatar"
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <div class="modal-footer border-0">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                          </div>
                         </form>
+
                       </div>
                       <div class="modal-footer border-0">
                         <button
@@ -567,18 +603,26 @@
                   >
                     <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th style="width: 10%">Action</th>
+                      <th>Avatar</th>
+                      <th>ID User</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th>Fhone</th>
+                      <th style="width: 10%">ID ACC</th>
+                      <th>Control</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Action</th>
+                      <th>Avatar</th>
+                      <th>ID User</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Address</th>
+                      <th>Fhone</th>
+                      <th>ID ACC</th>
+                      <th>Control</th>
                     </tr>
                     </tfoot>
                     <tbody>
@@ -587,33 +631,87 @@
                         for (User user : listUsers) {
                     %>
                     <tr>
-                      <td><img src="../../img/avatar<%= user.getAvatar() %> "></td>
-                      <td><%= user.getUserId()%></td>
+                      <td><img src="<%= user.getAvatar() %>" style="max-width: 50px; max-height: 50px;"></td>
+                      <td><%= user.getUserId() %></td>
                       <td><%= user.getFullName() %></td>
                       <td><%= user.getEmail() %></td>
-                      <td><%= user.getAddress()%></td>
-                      <td><%= user.getPhone()%></td>
+                      <td><%= user.getAddress() %></td>
+                      <td><%= user.getPhone() %></td>
                       <td><%= user.getAccount().getAccountId() %></td>
                       <td>
                         <div class="form-button-action">
-                          <button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Sửa">
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteUser" />
+                            <input type="hidden" name="id_user" value="<%= user.getUserId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit User" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editUser<%= user.getUserId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button type="button" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
-                            <i class="fa fa-times"></i>
-                          </button>
+                          <div class="modal fade" id="editUser<%= user.getUserId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Chỉnh sửa</span>
+                                    <span class="fw-light">Người dùng</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editUser" />
+                                  <input type="hidden" name="id_user" value="<%= user.getUserId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Chỉnh sửa thông tin người dùng</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Tài khoản</label>
+                                          <input type="text" class="form-control" name="id_taikhoan" value="<%= user.getAccount().getAccountId() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Họ và tên</label>
+                                          <input type="text" class="form-control" name="fullname" value="<%= user.getFullName() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Địa chỉ</label>
+                                          <input type="text" class="form-control" name="address" value="<%= user.getAddress() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Email</label>
+                                          <input type="email" class="form-control" name="email" value="<%= user.getEmail() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Số điện thoại</label>
+                                          <input type="text" class="form-control" name="phone" value="<%= user.getPhone() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
                     <% } // end for loop
-                    } else { // if listOrders is null or empty
+                    } else { // if listUsers is null or empty
                     %>
                     <tr>
-                      <td colspan="5">Khong co Khach Hang nao.</td>
+                      <td colspan="8">Không có người dùng nào.</td>
                     </tr>
                     <% } // end if-else block
                     %>
                     </tbody>
+
                   </table>
                 </div>
               </div>

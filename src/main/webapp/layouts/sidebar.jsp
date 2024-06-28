@@ -1,4 +1,5 @@
-<%--
+<%@ page import="com.quach.shop_giay.model.Account" %>
+<%@ page import="java.util.Objects" %><%--
   Created by IntelliJ IDEA.
   User: quach
   Date: 26/06/2024
@@ -11,6 +12,10 @@
     <title>Title</title>
 </head>
 <body>
+<% Account account = (Account) session.getAttribute("checkLogin");
+    System.out.println("Account"+account);
+    %>
+
 <!-- Sidebar -->
 <div class="sidebar" data-background-color="dark">
     <div class="sidebar-logo">
@@ -77,6 +82,7 @@
                         </ul>
                     </div>
                 </li>
+                <% if(account != null && account.getRole() != null && (account.getRole().equals("admin") || account.getRole().equals("kho"))) { %>
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#sidebarLayouts">
                         <i class="fas fa-th-list"></i>
@@ -98,6 +104,8 @@
                         </ul>
                     </div>
                 </li>
+                <% } %>
+
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#maps">
                         <i class="fas fa-map-marker-alt"></i>
@@ -153,23 +161,24 @@
                         </ul>
                     </div>
                 </li>
+                <%if(account != null && account.getRole() != null && account.getRole().equals("admin")){%>
                 <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#taikhoan">
+                    <a data-bs-toggle="collapse" href="#taikhoan">
                     <i class="fa-solid fa-user"></i>
                     <p>Quản lý Tài khoản</p>
                     <span class="caret"></span>
-                </a>
-                <div class="collapse" id="taikhoan">
-                    <ul class="nav nav-collapse">
-                        <li>
-                            <a href="admin?url=khachhang">
+                    </a>
+                    <div class="collapse" id="taikhoan">
+                        <ul class="nav nav-collapse">
+                            <li>
+                                <a href="admin?url=taikhoan">
                                 <span class="sub-item">Tài khoản</span>
-                            </a>
-                        </li>
-
-                    </ul>
-                </div>
-            </li>
+                                 </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <%}%>
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#danhmuc">
                         <i class="fas fa-layer-group"></i>
@@ -204,43 +213,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#forms">
-                        <i class="fas fa-pen-square"></i>
-                        <p>Forms</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse" id="forms">
-                        <ul class="nav nav-collapse">
-                            <li>
-                                <a href="forms/forms.html">
-                                    <span class="sub-item">Basic Form</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#tables">
-                        <i class="fas fa-table"></i>
-                        <p>Tables</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse" id="tables">
-                        <ul class="nav nav-collapse">
-                            <li>
-                                <a href="tables/tables.html">
-                                    <span class="sub-item">Basic Table</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="tables/datatables.html">
-                                    <span class="sub-item">Datatables</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+
             </ul>
         </div>
     </div>

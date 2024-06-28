@@ -20,20 +20,25 @@ public class ProductDAO implements DAOInterface<Product> {
             String sql = "SELECT * FROM products WHERE product_id=?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, product.getProductId());
+            System.out.println("Executing query: " + st.toString());
             ResultSet rs = st.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 String productId = rs.getString("product_id");
                 String productName = rs.getString("name");
                 String description = rs.getString("description");
                 double price = rs.getDouble("price");
                 String categoryId = rs.getString("category_id");
                 String brandId = rs.getString("brand_id");
-                Category category = new CategoryDAO().getId(new Category(categoryId, ""));
-                Brand brand = new BrandDAO().getId(new Brand(brandId, "", ""));
                 String image = rs.getString("image");
-
-                ketqua = new Product(productId, productName, description, price, category, brand, image);
-
+                String color = rs.getString("color");
+                double size = rs.getDouble("size");
+                Category category = new Category();
+                category.setCategoryId(categoryId);
+                Brand brand = new Brand();
+                brand.setBrandId(brandId);
+                ketqua = new Product(productId, productName, description, price, category, brand, image, color, size);
+            } else {
+                System.out.println("No product found with product_id: " + product.getProductId());
             }
             JDBCUtil.closeConnection(conn);
         } catch (Exception e) {
@@ -42,6 +47,17 @@ public class ProductDAO implements DAOInterface<Product> {
         return ketqua;
     }
 
+    public static void main(String[] args) {
+        Product product = new Product();
+        product.setProductId("p1");
+        ProductDAO productDAO = new ProductDAO();
+        Product result = productDAO.getId(product);
+        if (result != null) {
+            System.out.println(result);
+        } else {
+            System.out.println("Product not found.");
+        }
+    }
     @Override
     public ArrayList<Product> getAll() {
         ArrayList<Product> ketqua = new ArrayList<>();
@@ -57,10 +73,15 @@ public class ProductDAO implements DAOInterface<Product> {
                 double price = rs.getDouble("price");
                 String categoryId = rs.getString("category_id");
                 String brandId = rs.getString("brand_id");
-                Category category = new CategoryDAO().getId(new Category(categoryId, ""));
-                Brand brand = new BrandDAO().getId(new Brand(brandId, "", ""));
+                String color=rs.getString("color");
+                double size=rs.getDouble("size");
                 String image = rs.getString("image");
-                Product product = new Product(productId, productName, description, price, category, brand, image);
+                Brand brand = new Brand();
+                brand.setBrandId(brandId);
+                Category category=new Category();
+                category.setCategoryId(categoryId);
+                Product product = new Product(productId, productName, description, price, category, brand, image,color,size);
+
                 ketqua.add(product);
             }
             JDBCUtil.closeConnection(conn);
@@ -69,15 +90,6 @@ public class ProductDAO implements DAOInterface<Product> {
         }
         return ketqua;
     }
-
-
-/*    public static void main(String[] args) {
-        ProductDAO productDAO=new ProductDAO();
-        List<Product> product=productDAO.getAll();
-        for (Product p:product){
-            System.out.println(p);
-        }
-    }*/
 
 
     public Product getProductId(String productId) {
@@ -94,11 +106,15 @@ public class ProductDAO implements DAOInterface<Product> {
                 double price = rs.getDouble("price");
                 String categoryId = rs.getString("category_id");
                 String brandId = rs.getString("brand_id");
-                Category category = new CategoryDAO().getId(new Category(categoryId, ""));
-                Brand brand = new BrandDAO().getId(new Brand(brandId, "", ""));
                 String image = rs.getString("image");
+                String color=rs.getString("color");
+                double size=rs.getDouble("size");
+                Category category = new Category();
+                category.setCategoryId(categoryId);
+                Brand brand = new Brand();
+                brand.setBrandId(brandId);
+                ketqua = new Product(productId, productName, description, price, category, brand, image,color,size);
 
-                ketqua = new Product(productId, productName, description, price, category, brand, image);
 
             }
             JDBCUtil.closeConnection(conn);
@@ -147,12 +163,15 @@ public class ProductDAO implements DAOInterface<Product> {
                     String description = rs.getString("description");
                     double price = rs.getDouble("price");
                     String categoryId = rs.getString("category_id");
-                    // Lưu ý: Không cần lấy lại brandId từ ResultSet vì chúng ta đã truyền vào từ tham số
-                    Category category = new CategoryDAO().getId(new Category(categoryId, ""));
-                    Brand brand = new BrandDAO().getId(new Brand(brandId, "", ""));
                     String image = rs.getString("image");
+                    String color=rs.getString("color");
+                    double size=rs.getDouble("size");
+                    Category category = new Category();
+                    category.setCategoryId(categoryId);
+                    Brand brand = new Brand();
+                    brand.setBrandId(brandId);
+                    Product resultProduct = new Product(productId, productName, description, price, category, brand, image,color,size);
 
-                    Product resultProduct = new Product(productId, productName, description, price, category, brand, image);
                     ketqua.add(resultProduct);
                 }
             }
@@ -175,12 +194,17 @@ public class ProductDAO implements DAOInterface<Product> {
                         String description = rs.getString("description");
                         double price = rs.getDouble("price");
                         String brandId = rs.getString("brand_id");
-                        Category category = new CategoryDAO().getId(new Category(categoryId, ""));
-                        Brand brand = new BrandDAO().getId(new Brand(brandId, "", ""));
                         String image = rs.getString("image");
 
-                        Product resultProduct = new Product(productId, productName, description, price, category, brand, image);
-                        ketqua.add(resultProduct);
+                        String color=rs.getString("color");
+                        double size=rs.getDouble("size");
+                        Category category = new Category();
+                        category.setCategoryId(categoryId);
+                        Brand brand = new Brand();
+                        brand.setBrandId(brandId);
+                        Product product = new Product(productId, productName, description, price, category, brand, image,color,size);
+
+                        ketqua.add(product);
                     }
                 }
             } catch (SQLException e) {
@@ -189,12 +213,7 @@ public class ProductDAO implements DAOInterface<Product> {
             return ketqua;
         }
 
-        public static void main(String[] args) {
-            ProductDAO productDAO = new ProductDAO();
 
-            System.out.println(productDAO.getCategoryProducts("c1"));
-
-        }
 
     public List<Product> getNewProducts() {
         List<Product> ketqua = new ArrayList<>();
@@ -210,11 +229,15 @@ public class ProductDAO implements DAOInterface<Product> {
                 double price = rs.getDouble("price");
                 String categoryId = rs.getString("category_id");
                 String brandId = rs.getString("brand_id");
-                Category category = new CategoryDAO().getId(new Category(categoryId, ""));
-                Brand brand = new BrandDAO().getId(new Brand(brandId, "", ""));
                 String image = rs.getString("image");
+                String color=rs.getString("color");
+                double size=rs.getDouble("size");
+                Category category = new Category();
+                category.setCategoryId(categoryId);
+                Brand brand = new Brand();
+                brand.setBrandId(brandId);
+                Product product = new Product(productId, productName, description, price, category, brand, image,color,size);
 
-                Product product = new Product(productId, productName, description, price, category, brand, image);
                 ketqua.add(product);
             }
             JDBCUtil.closeConnection(conn);

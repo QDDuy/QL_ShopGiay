@@ -10,11 +10,13 @@ public class Product {
     private Category categoryId;
     private Brand brandId;
     private String image;
+    private String color;
+    private double size;
 
     public Product() {
     }
 
-    public Product(String productId, String productName, String desciption, double price, Category categoryId, Brand brandId, String image) {
+    public Product(String productId, String productName, String desciption, double price, Category categoryId, Brand brandId, String image, String color, double size) {
         this.productId = productId;
         this.productName = productName;
         this.desciption = desciption;
@@ -22,6 +24,8 @@ public class Product {
         this.categoryId = categoryId;
         this.brandId = brandId;
         this.image = image;
+        this.color = color;
+        this.size = size;
     }
 
     public String getProductId() {
@@ -80,17 +84,33 @@ public class Product {
         this.image = image;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    public void setSize(double size) {
+        this.size = size;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Product)) return false;
         Product product = (Product) o;
-        return Double.compare(getPrice(), product.getPrice()) == 0 && Objects.equals(getProductId(), product.getProductId()) && Objects.equals(getProductName(), product.getProductName()) && Objects.equals(getDesciption(), product.getDesciption()) && Objects.equals(getCategoryId(), product.getCategoryId()) && Objects.equals(getBrandId(), product.getBrandId()) && Objects.equals(getImage(), product.getImage());
+        return Double.compare(getPrice(), product.getPrice()) == 0 && Double.compare(getSize(), product.getSize()) == 0 && Objects.equals(getProductId(), product.getProductId()) && Objects.equals(getProductName(), product.getProductName()) && Objects.equals(getDesciption(), product.getDesciption()) && Objects.equals(getCategoryId(), product.getCategoryId()) && Objects.equals(getBrandId(), product.getBrandId()) && Objects.equals(getImage(), product.getImage()) && Objects.equals(getColor(), product.getColor());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getProductId(), getProductName(), getDesciption(), getPrice(), getCategoryId(), getBrandId(), getImage());
+        return Objects.hash(getProductId(), getProductName(), getDesciption(), getPrice(), getCategoryId(), getBrandId(), getImage(), getColor(), getSize());
     }
 
     @Override
@@ -103,6 +123,8 @@ public class Product {
                 ", categoryId=" + categoryId +
                 ", brandId=" + brandId +
                 ", image='" + image + '\'' +
+                ", color='" + color + '\'' +
+                ", size=" + size +
                 '}';
     }
 }

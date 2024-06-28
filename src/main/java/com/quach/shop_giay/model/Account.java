@@ -1,5 +1,7 @@
 package com.quach.shop_giay.model;
 
+import java.util.Objects;
+
 public class Account {
     private String accountId;
     private String userName;
@@ -26,6 +28,19 @@ public class Account {
 
     public String getUserName() {
         return userName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(accountId, account.accountId) && Objects.equals(userName, account.userName) && Objects.equals(password, account.password) && Objects.equals(role, account.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountId, userName, password, role);
     }
 
     public void setUserName(String userName) {

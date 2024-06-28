@@ -1,8 +1,6 @@
 package com.quach.shop_giay.database;
 
-import com.quach.shop_giay.model.Account;
-import com.quach.shop_giay.model.Order;
-import com.quach.shop_giay.model.User;
+import com.quach.shop_giay.model.*;
 
 import javax.lang.model.type.PrimitiveType;
 import java.sql.Connection;
@@ -37,17 +35,7 @@ public class OrderDAO implements DAOInterface<Order> {
         return ketqua;
     }
 
-    public static void main(String[] args) {
-        OrderDAO orderDAO = new OrderDAO();
-        ArrayList<Order> orders = orderDAO.getAll();
-        if (orders.isEmpty()) {
-            System.out.println("No orders found.");
-        } else {
-            for (Order order : orders) {
-                System.out.println(order);
-            }
-        }
-    }
+
     @Override
     public Order getId(Order order) {
         Order ketqua = null;
@@ -72,6 +60,12 @@ public class OrderDAO implements DAOInterface<Order> {
         return ketqua;
     }
 
+    public static void main(String[] args) {
+        Order order=new Order();
+        order.setOrderId("DH1719534386795339");
+        OrderDAO orderDAO=new OrderDAO();
+        System.out.println(orderDAO.getId(order));
+    }
 
     @Override
     public int insert(Order order) {
