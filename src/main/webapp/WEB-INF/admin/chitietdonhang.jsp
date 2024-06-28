@@ -1,5 +1,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.quach.shop_giay.model.Order" %>
+<%@ page import="com.quach.shop_giay.model.OrderDetail" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -477,7 +478,7 @@
 
                       </div>
                       <form method="post" action="admin">
-                        <input type="hidden" name="action" value="createOrder"/>
+                        <input type="hidden" name="action" value="createOrderDetail"/>
 
                         <div class="modal-body">
                           <p class="small">
@@ -488,50 +489,50 @@
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group form-group-default">
-                                <label>User Id</label>
+                                <label>Mã Đơn Hàng</label>
                                 <input
                                         id="addName"
                                         type="text"
                                         class="form-control"
-                                        placeholder="User id"
-                                        name="userId"
+                                        placeholder="Mã đơn hàng"
+                                        name="orderId"
                                         required
                                 />
                               </div>
                               <div class="form-group form-group-default">
-                                <label>Order date</label>
+                                <label>Mã sản phẩm</label>
                                 <input
                                         id="order_date"
-                                        type="date"
+                                        type="text"
                                         class="form-control"
-                                        placeholder="User id"
-                                        name="order_date"
+                                        placeholder="mã sản phẩm"
+                                        name="productId"
                                         required
                                 />
                               </div>
                             </div>
                             <div class="col-md-6 pe-0">
                               <div class="form-group form-group-default">
-                                <label>Total amount</label>
+                                <label>Số lượng</label>
                                 <input
                                         id="addPosition"
                                         type="text"
                                         class="form-control"
-                                        placeholder="Total Amounts"
-                                        name="totalAmount"
+                                        placeholder="Số lượng"
+                                        name="quantity"
                                         required
                                 />
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-group form-group-default">
-                                <label>Order status</label>
+                                <label>Đơn giá</label>
                                 <input
                                         id="addOffice"
                                         type="text"
                                         class="form-control"
-                                        placeholder="fill office"
-                                        name="orderStatus"
+                                        placeholder="Đơn giá"
+                                        name="unitprice"
                                         required
                                 />
 
@@ -559,55 +560,52 @@
                   <table id="add-row" class="display table table-striped table-hover">
                     <thead>
                     <tr>
+                      <th>Mã OrderDetail</th>
                       <th>Mã Đơn Hàng</th>
-                      <th>Mã khách hàng</th>
-                      <th>Ngày đặt hàng</th>
-                      <th>Tổng tiền</th>
-                      <th>Trạng thái đơn hàng</th>
+                      <th>Mã Sản Phẩm</th>
+                      <th>Số Lượng</th>
+                      <th>Đơn giá</th>
                       <th>Action</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
+                      <th>Mã OrderDetail</th>
                       <th>Mã Đơn Hàng</th>
-                      <th>Mã khách hàng</th>
-                      <th>Ngày đặt hàng</th>
-                      <th>Tổng tiền</th>
-                      <th>Trạng thái đơn hàng</th>
+                      <th>Mã Sản Phẩm</th>
+                      <th>Số Lượng</th>
+                      <th>Đơn giá</th>
                       <th>Action</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    <% List<Order> listOrders = (List<Order>) request.getAttribute("listOrders");
-                      String er = (String) request.getAttribute("error"); // Cast to String directly
-                    %>
-
-                    <% if (listOrders != null && !listOrders.isEmpty()) { %>
-                    <% for (Order order : listOrders) { %>
+                    <% List<OrderDetail> listOrderDetails = (List<OrderDetail>) request.getAttribute("listOrderDetail");
+                       if (listOrderDetails != null && !listOrderDetails.isEmpty()) { %>
+                    <% for (OrderDetail orderDetail : listOrderDetails) { %>
                     <tr>
-                      <td><%= order.getOrderId() %>
+                      <td><%= orderDetail.getOrderDetailId() %>
                       </td>
-                      <td><%= order.getUser().getUserId() %>
+                      <td><%= orderDetail.getOrderId().getOrderId() %>
                       </td>
-                      <td><%= order.getOrderDate() %>
+                      <td><%= orderDetail.getProductId().getProductId() %>
                       </td>
-                      <td><%= order.getTotalAmount() %>
+                      <td><%= orderDetail.getQuantity() %>
                       </td>
-                      <td><%= order.getOrderStatus() %>
+                      <td><%= orderDetail.getUnitPrice() %>
                       </td>
                       <td>
                         <div class="form-button-action">
                           <button type="button" title="Edit Task"
                                   class="btn btn-link btn-primary btn-lg"
                                   data-bs-toggle="modal"
-                                  data-bs-target="#editOrder<%= order.getOrderId() %>">
+                                  data-bs-target="#editOrder<%= orderDetail.getOrderDetailId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
                           <form action="${pageContext.request.contextPath}/admin" method="get"
                                 style="display:inline;">
-                            <input type="hidden" name="url" value="deleteOrder"/>
-                            <input type="hidden" name="orderId"
-                                   value="<%= order.getOrderId() %>"/>
+                            <input type="hidden" name="url" value="deleteOrderDetail"/>
+                            <input type="hidden" name="orderDetailId"
+                                   value="<%= orderDetail.getOrderDetailId() %>"/>
                             <button type="submit" class="btn btn-link btn-danger"
                                     data-bs-toggle="tooltip" title="Xóa">
                               <i class="fa fa-times"></i>
@@ -615,7 +613,7 @@
                           </form>
 
                           <!-- Edit Order Modal -->
-                          <div class="modal fade" id="editOrder<%= order.getOrderId() %>"
+                          <div class="modal fade" id="editOrder<%= orderDetail.getOrderDetailId() %>"
                                tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                               <div class="modal-content">
@@ -627,50 +625,46 @@
                                 </div>
                                 <form method="post" action="admin">
                                   <input type="hidden" name="action"
-                                         value="editOrder"/>
-                                  <input type="hidden" name="orderId"
-                                         value="<%= order.getOrderId() %>"/>
+                                         value="orderDetailId"/>
+                                  <input type="hidden" name="orderDetailId"
+                                         value="<%= orderDetail.getOrderDetailId() %>"/>
                                   <div class="modal-body">
                                     <p class="small">Edit the details of the
                                       order</p>
-                                    <%-- Display error message if exists --%>
-                                    <% if (er != null && !er.isEmpty()) { %>
-                                    <p class="text-danger"><%= er %>
-                                    </p>
-                                    <% } %>
+
                                     <div class="row">
                                       <div class="col-sm-12">
                                         <div class="form-group form-group-default">
-                                          <label>User Id</label>
+                                          <label>Mã đơn hàng</label>
                                           <input type="text"
                                                  class="form-control"
-                                                 name="userId"
-                                                 value="<%= order.getUser().getUserId() %>"/>
+                                                 name="orderId"
+                                                 value="<%= orderDetail.getOrderId().getOrderId() %>"/>
                                         </div>
                                         <div class="form-group form-group-default">
-                                          <label>Order Date</label>
-                                          <input type="date"
+                                          <label>Mã sản phẩm</label>
+                                          <input type="text"
                                                  class="form-control"
-                                                 name="orderDate"
-                                                 value="<%= order.getOrderDate() %>"/>
+                                                 name="productId"
+                                                 value="<%=orderDetail.getProductId().getProductId()%>"/>
                                         </div>
                                       </div>
                                       <div class="col-md-6 pe-0">
                                         <div class="form-group form-group-default">
-                                          <label>Total Amount</label>
-                                          <input type="text"
+                                          <label>Số lượng</label>
+                                          <input type="number"
                                                  class="form-control"
-                                                 name="totalAmount"
-                                                 value="<%= order.getTotalAmount() %>"/>
+                                                 name="quantity"
+                                                 value="<%= orderDetail.getQuantity() %>"/>
                                         </div>
                                       </div>
                                       <div class="col-md-6">
                                         <div class="form-group form-group-default">
-                                          <label>Order Status</label>
+                                          <label>Đơn giá</label>
                                           <input type="text"
                                                  class="form-control"
-                                                 name="orderStatus"
-                                                 value="<%= order.getOrderStatus() %>"/>
+                                                 name="unitprice"
+                                                 value="<%= orderDetail.getUnitPrice() %>"/>
                                         </div>
                                       </div>
                                     </div>
