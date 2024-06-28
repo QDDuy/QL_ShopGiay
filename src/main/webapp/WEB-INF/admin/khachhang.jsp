@@ -632,32 +632,86 @@
                     %>
                     <tr>
                       <td><img src="<%= user.getAvatar() %>" style="max-width: 50px; max-height: 50px;"></td>
-                      <td><%= user.getUserId()%></td>
+                      <td><%= user.getUserId() %></td>
                       <td><%= user.getFullName() %></td>
                       <td><%= user.getEmail() %></td>
-                      <td><%= user.getAddress()%></td>
-                      <td><%= user.getPhone()%></td>
+                      <td><%= user.getAddress() %></td>
+                      <td><%= user.getPhone() %></td>
                       <td><%= user.getAccount().getAccountId() %></td>
                       <td>
                         <div class="form-button-action">
-                          <button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Sửa">
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteUser" />
+                            <input type="hidden" name="id_user" value="<%= user.getUserId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit User" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editUser<%= user.getUserId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button type="button" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
-                            <i class="fa fa-times"></i>
-                          </button>
+                          <div class="modal fade" id="editUser<%= user.getUserId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Chỉnh sửa</span>
+                                    <span class="fw-light">Người dùng</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editUser" />
+                                  <input type="hidden" name="id_user" value="<%= user.getUserId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Chỉnh sửa thông tin người dùng</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Tài khoản</label>
+                                          <input type="text" class="form-control" name="id_taikhoan" value="<%= user.getAccount().getAccountId() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Họ và tên</label>
+                                          <input type="text" class="form-control" name="fullname" value="<%= user.getFullName() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Địa chỉ</label>
+                                          <input type="text" class="form-control" name="address" value="<%= user.getAddress() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Email</label>
+                                          <input type="email" class="form-control" name="email" value="<%= user.getEmail() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Số điện thoại</label>
+                                          <input type="text" class="form-control" name="phone" value="<%= user.getPhone() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
                     <% } // end for loop
-                    } else { // if listOrders is null or empty
+                    } else { // if listUsers is null or empty
                     %>
                     <tr>
-                      <td colspan="5">Khong co Khach Hang nao.</td>
+                      <td colspan="8">Không có người dùng nào.</td>
                     </tr>
                     <% } // end if-else block
                     %>
                     </tbody>
+
                   </table>
                 </div>
               </div>

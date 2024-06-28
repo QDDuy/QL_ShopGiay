@@ -122,11 +122,8 @@ public class AccountDAO  implements DAOInterface<Account>{
 
         // Khởi tạo đối tượng Account và thiết lập accountId
         Account acc = new Account();
-        acc.setAccountId("TK4"); // Thiết lập accountId cần xóa
-
-        // Gọi phương thức delete từ AccountDAO với đối tượng Account
+        acc.setAccountId("TK6"); // Thiết lập accountId cần xóa
         int deletedRows = dao.delete(acc);
-
         // Kiểm tra kết quả
         if (deletedRows > 0) {
             System.out.println("Deleted account with ID " + acc.getAccountId() + " successfully.");
