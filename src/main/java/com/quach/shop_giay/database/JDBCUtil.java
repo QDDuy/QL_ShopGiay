@@ -13,7 +13,7 @@ public class JDBCUtil {
             // Define the connection URL, user and password
             String url = "jdbc:mysql://localhost:3306/shop_giay";
             String user = "root";
-            String pass = "Admin123";
+            String pass = "Admin123@";
             // Establish the connection
             c = DriverManager.getConnection(url, user, pass);
         } catch (ClassNotFoundException e) {

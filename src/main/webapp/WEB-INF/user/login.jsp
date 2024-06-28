@@ -53,7 +53,7 @@
 
             <form action="user" method="post" class="login100-form validate-form">
 					<span class="login100-form-title">
-						<%=msgErro%> fgdgdfgdfgdfgd
+						<%=msgErro%> LOGIN
 					</span>
                 <input type="hidden" name="act" value="login">
                 <div class="wrap-input100 validate-input" data-validate="Valid user name is required: abcdxyz">
