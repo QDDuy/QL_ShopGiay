@@ -2,7 +2,6 @@ package com.quach.shop_giay.database;
 
 import com.quach.shop_giay.model.Brand;
 
-import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +13,8 @@ public class BrandDAO implements DAOInterface<Brand> {
         ArrayList<Brand> ketqua = new ArrayList<>();
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "SELECT *FROM brands";
+            System.out.println("Connection established: " + (conn != null));
+            String sql = "SELECT * FROM brands";
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -23,13 +23,17 @@ public class BrandDAO implements DAOInterface<Brand> {
                 String brandImage = rs.getString("image");
                 Brand brand = new Brand(brandId, brandName, brandImage);
                 ketqua.add(brand);
+                System.out.println("Added brand: " + brandId + ", " + brandName + ", " + brandImage);
             }
             JDBCUtil.closeConnection(conn);
+            System.out.println("Connection closed.");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ketqua;
     }
+
+
 
     @Override
     public Brand getId(Brand brand) {
@@ -60,7 +64,7 @@ public class BrandDAO implements DAOInterface<Brand> {
         int ketqua = 0;
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "INSERT INTO brands (brand_id, brand_name,image) VALUES (?,?,?)";
+            String sql = "INSERT INTO brands (brand_id, brand_name, image) VALUES (?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, brand.getBrandId());
             st.setString(2, brand.getBrandName());
@@ -73,26 +77,25 @@ public class BrandDAO implements DAOInterface<Brand> {
         return ketqua;
     }
 
-
     @Override
     public int insertAll(ArrayList<Brand> arr) {
-        int dem = 0;
+        int ketqua = 0;
         for (Brand brand : arr) {
-            dem += this.insert(brand);
+            ketqua += this.insert(brand);
         }
-        return dem;
+        return ketqua;
     }
 
     @Override
     public int delete(Brand brand) {
         int ketqua = 0;
         try {
-            Connection con = JDBCUtil.getConnection();
-            String sql = "DELETE FORM brands WHERE brand_id=?";
-            PreparedStatement st = con.prepareStatement(sql);
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "DELETE FROM brands WHERE brand_id=?";
+            PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, brand.getBrandId());
             ketqua = st.executeUpdate();
-
+            JDBCUtil.closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,16 +116,22 @@ public class BrandDAO implements DAOInterface<Brand> {
         int ketqua = 0;
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "UPDATE brands set brand_name=? ,image=? WHERE brand_id=?";
+            String sql = "UPDATE brands SET brand_name=?, image=? WHERE brand_id=?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, brand.getBrandName());
-            st.setString(2,brand.getBrandImage());
+            st.setString(2, brand.getBrandImage());
             st.setString(3, brand.getBrandId());
-
             ketqua = st.executeUpdate();
+            JDBCUtil.closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ketqua;
+    }
+
+    public static void main(String[] args) {
+        BrandDAO dao = new BrandDAO();
+        Brand brand = new Brand("bra1","àdsfs","àdfasf");
+        dao.insert(brand);
     }
 }

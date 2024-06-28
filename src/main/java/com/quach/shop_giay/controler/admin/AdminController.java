@@ -2,6 +2,7 @@ package com.quach.shop_giay.controler.admin;
 
 import com.quach.shop_giay.database.*;
 import com.quach.shop_giay.model.*;
+
 import com.quach.shop_giay.util.Encryption;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -46,14 +47,25 @@ public class AdminController extends HttpServlet {
         } else if ("taikhoan".equals(url)) {
             showTaikhoan(req, resp);
         } else if ("danhmuc".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/danhmuc.jsp").forward(req, resp);
+
+            showDanhmuc(req, resp);
+            return;
+
         } else if ("brand".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
+            showBrand(req, resp);
+            return;
         } else if ("deleteOrder".equals(url)) {
             String orderId = req.getParameter("orderId");
             Order order = new Order();
             order.setOrderId(orderId);
             deleteOrder(req, resp, order);
+            return;
+        } else if ("deleteCategory".equals(url)) {
+            String categoryId = req.getParameter("categoryId");
+            Category category = new Category();
+            category.setCategoryId(categoryId);
+            deleteCategory(req, resp, category);
+            return;
         } else if ("deleteEmployee".equals(url)) {
             String employeeId = req.getParameter("id_employe");
             Employees employee = new Employees();
@@ -70,8 +82,15 @@ public class AdminController extends HttpServlet {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderDetailId(orderDetailId);
             deleteOrderDetail(req, resp, orderDetail);
+        } else if ("deleteBrand".equals(url)) {
+            String brandId = req.getParameter("brandId");
+            Brand brand = new Brand();
+            brand.setBrandId(brandId);
+            deleteBrand(req, resp, brand);
+            return;
         } else {
             req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
+
         }
     }
 
@@ -82,6 +101,11 @@ public class AdminController extends HttpServlet {
             createOrder(req, resp);
         } else if ("editOrder".equals(action)) {
             editOrder(req, resp);
+        } else if ("categorycreate".equals(action)) {
+            category(req, resp);
+        } else if ("editCategory".equals(action)) {
+            editCategory(req, resp);
+
         } else if ("createEmployee".equals(action)) {
             createEmployee(req, resp);
         } else if ("editEmployee".equals(action)) {
@@ -96,7 +120,16 @@ public class AdminController extends HttpServlet {
             createOrderDetails(req, resp);
         } else if ("orderDetailId".equals(action)) {
             updateOrderDetail(req, resp);
+
+        }else if ("createBrand".equals(action)) {
+            createBrand(req, resp);
+
+        }else if ("editBrand".equals(action)) {
+            editBrand(req, resp);
+
         }
+
+
     }
 
     //  start  Đơn hàng
@@ -441,6 +474,49 @@ public class AdminController extends HttpServlet {
         req.setAttribute("listemp", listemp);
         req.getRequestDispatcher("/WEB-INF/admin/nhanvien.jsp").forward(req, resp);
     }
+    private void showDanhmuc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Category category = new Category();
+        List<Category> listemp = categoryDAO.getAll();
+        System.out.println(listemp);
+        req.setAttribute("listemp", listemp);
+        req.getRequestDispatcher("/WEB-INF/admin/danhmuc.jsp").forward(req, resp);
+    }
+    private void category(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String categoryId;
+
+        Random rd = new Random();
+        categoryId = "DM" + System.currentTimeMillis() + rd.nextInt(1000);
+        String categoryName = req.getParameter("Tendanhmuc");
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Category category = new Category(categoryId,categoryName);
+        categoryDAO.insert(category);
+        // Chuyển hướng người dùng về trang quản lý đơn hàng
+        resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
+    }
+    private void deleteCategory(HttpServletRequest req, HttpServletResponse resp, Category category) throws ServletException, IOException {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        categoryDAO.delete(category);
+        System.out.println(categoryDAO.delete(category));
+        req.getSession().setAttribute("successMessage", "Đã xoá danh mục thành công!");
+
+        resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
+    }
+    private void editCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        String categoryId = req.getParameter("category_id");
+        String categoryName = req.getParameter("category_name");
+
+        // Tạo đối tượng Brand
+        Category category = new Category(categoryId, categoryName);
+
+        // Sử dụng DAO để cập nhật brand trong cơ sở dữ liệu
+        CategoryDAO categoryDAO = new CategoryDAO();
+        categoryDAO.update(category);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
+    }
 
     private void deleteEmployee(HttpServletRequest req, HttpServletResponse resp, Employees employees) throws ServletException, IOException {
         EmployeesDAO employeesDAO = new EmployeesDAO();
@@ -484,6 +560,53 @@ public class AdminController extends HttpServlet {
         employeesDAO.update(employees);
         resp.sendRedirect(req.getContextPath() + "/admin?url=nhanvien");
         System.out.println(employeesDAO.update(employees));
+    }
+    private void showBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        BrandDAO brandDAO = new BrandDAO();
+        List<Brand> listbrand = brandDAO.getAll();
+        System.out.println(listbrand);
+        req.setAttribute("listbrand", listbrand);
+        req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
+    }
+    private void createBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        Random rd = new Random();
+        String brandId = "br" + System.currentTimeMillis() + rd.nextInt(1000);
+        String brandName = req.getParameter("brand_name");
+        String brandImage = req.getParameter("image");
+
+        // Tạo đối tượng Brand
+        Brand brand = new Brand(brandId, brandName, brandImage);
+
+        // Sử dụng DAO để thêm brand mới vào cơ sở dữ liệu
+        BrandDAO brandDAO = new BrandDAO();
+        brandDAO.insert(brand);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
+    }
+    private void editBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        String brandId = req.getParameter("brand_id");
+        String brandName = req.getParameter("brand_name");
+        String brandImage = req.getParameter("image");
+
+        // Tạo đối tượng Brand
+        Brand brand = new Brand(brandId, brandName, brandImage);
+
+        // Sử dụng DAO để cập nhật brand trong cơ sở dữ liệu
+        BrandDAO brandDAO = new BrandDAO();
+        brandDAO.update(brand);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
+    }
+    private void deleteBrand(HttpServletRequest req, HttpServletResponse resp, Brand brand) throws ServletException, IOException {
+        BrandDAO brandDAO = new BrandDAO();
+        brandDAO.delete(brand);
+        System.out.println(brandDAO.delete(brand));
+        req.getSession().setAttribute("successMessage","Da xoa thanh cong");
+        resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
     }
 
 

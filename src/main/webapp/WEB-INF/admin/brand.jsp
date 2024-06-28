@@ -1,5 +1,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.quach.shop_giay.model.Order" %>
+<%@ page import="com.quach.shop_giay.model.Brand" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -109,7 +110,7 @@
             <div class="card">
               <div class="card-header">
                 <div class="d-flex align-items-center">
-                  <h4 class="card-title">Danh sách Hãng</h4>
+                  <h4 class="card-title">Danh sách hàng đơn hàng</h4>
                   <button
                           class="btn btn-primary btn-round ms-auto"
                           data-bs-toggle="modal"
@@ -127,8 +128,7 @@
                         id="addRowModal"
                         tabindex="-1"
                         role="dialog"
-                        aria-hidden="true"
-                >
+                        aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header border-0">
@@ -145,62 +145,48 @@
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
-                      <div class="modal-body">
-                        <p class="small">
-                          Create a new row using this form, make sure you
-                          fill them all
-                        </p>
-                        <form>
+                      <form method="post" action="admin">
+                        <input type="hidden" name="action" value="createBrand" />
+
+                        <div class="modal-body">
+                          <p class="small">
+                            Create a new row using this form, make sure you
+                            fill them all
+                          </p>
+
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group form-group-default">
-                                <label>Name</label>
+                                <label>Brand Name</label>
                                 <input
-                                        id="addName"
+                                        id="brandName"
                                         type="text"
                                         class="form-control"
-                                        placeholder="fill name"
+                                        placeholder="Brand name"
+                                        name="brand_name"
+                                        required
                                 />
                               </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
                               <div class="form-group form-group-default">
-                                <label>Position</label>
+                                <label>Image URL</label>
                                 <input
-                                        id="addPosition"
+                                        id="brandImage"
                                         type="text"
                                         class="form-control"
-                                        placeholder="fill position"
+                                        placeholder="Image URL"
+                                        name="image"
+                                        required
                                 />
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"/>
                               </div>
                             </div>
                           </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer border-0">
-                        <button
-                                type="submit"
-                                class="btn btn-primary">
-                          Add
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-danger"
-                                data-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                      </div>
+                        </div>
+
+                        <div class="modal-footer border-0">
+                          <button type="submit" class="btn btn-primary">Add</button>
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -209,285 +195,324 @@
                   <table id="add-row" class="display table table-striped table-hover">
                     <thead>
                     <tr>
-                      <th>Mã Đơn Hàng</th>
-                      <th>Mã khách hàng</th>
-                      <th>Ngày đặt hàng</th>
-                      <th>Trạng thái đơn hàng</th>
+                      <th>Mã thương hiệu</th>
+                      <th>Tên thương hiệu</th>
+                      <th>Hình ảnh</th>
                       <th>Action</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Mã Đơn Hàng</th>
-                      <th>Mã khách hàng</th>
-                      <th>Ngày đặt hàng</th>
-                      <th>Trạng thái đơn hàng</th>
+                      <th>Mã thương hệu</th>
+                      <th>Tên thương hiệu</th>
+                      <th>Hình ảnh</th>
                       <th>Action</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    <% List<Order> listOrders = (List<Order>) request.getAttribute("listOrders");
-                      if (listOrders != null && !listOrders.isEmpty()) {
-                        for (Order order : listOrders) {
+                    <% List<Brand> listBrand = (List<Brand>) request.getAttribute("listbrand");
+                      if (listBrand != null && !listBrand.isEmpty()) {
+                        for (Brand brand : listBrand) {
                     %>
                     <tr>
-                      <td><%= order.getOrderId() %></td>
-                      <td><%= order.getUser().getUserId() %></td>
-                      <td><%= order.getOrderDate() %></td>
-                      <td><%= order.getOrderStatus() %></td>
+                      <td><%= brand.getBrandId() %></td>
+                      <td><%= brand.getBrandName() %></td>
+                      <td><%= brand.getBrandImage() %></td>
                       <td>
                         <div class="form-button-action">
-                          <button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Sửa">
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteBrand" />
+                            <input type="hidden" name="brandId" value="<%= brand.getBrandId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit Task" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editOrder<%= brand.getBrandId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button type="button" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
-                            <i class="fa fa-times"></i>
-                          </button>
+
+                          <div class="modal fade" id="editOrder<%= brand.getBrandId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Edit</span>
+                                    <span class="fw-light">Brand</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editBrand" />
+                                  <input type="hidden" name="brand_id" value="<%= brand.getBrandId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Edit the details of the brand</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Brand Name</label>
+                                          <input type="text" class="form-control" name="brand_name" value="<%= brand.getBrandName() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Image</label>
+                                          <input type="text" class="form-control" name="image" value="<%= brand.getBrandImage() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
-                    <% } // end for loop
-                    } else { // if listOrders is null or empty
-                    %>
+                    <% }
+                    } else { %>
                     <tr>
-                      <td colspan="5">Không có đơn hàng nào.</td>
+                      <td colspan="5">Thương hiệu chưa được thêm vào.</td>
                     </tr>
-                    <% } // end if-else block
-                    %>
+                    <% } %>
                     </tbody>
                   </table>
-
                 </div>
+
+
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <footer class="footer">
-      <div class="container-fluid d-flex justify-content-between">
-        <nav class="pull-left">
-          <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link" href="http://www.themekita.com">
-                ThemeKita
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"> Help </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"> Licenses </a>
-            </li>
-          </ul>
-        </nav>
-        <div class="copyright">
-          2024, made with <i class="fa fa-heart heart text-danger"></i> by
-          <a href="http://www.themekita.com">ThemeKita</a>
-        </div>
-        <div>
-          Distributed by
-          <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-        </div>
-      </div>
-    </footer>
   </div>
 
-  <!-- Custom template | don't include it in your project! -->
-  <div class="custom-template">
-    <div class="title">Settings</div>
-    <div class="custom-content">
-      <div class="switcher">
-        <div class="switch-block">
-          <h4>Logo Header</h4>
-          <div class="btnSwitch">
-            <button
-                    type="button"
-                    class="selected changeLogoHeaderColor"
-                    data-color="dark"
-            ></button>
-            <button
-                    type="button"
-                    class="selected changeLogoHeaderColor"
-                    data-color="blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="purple"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="light-blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="green"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="orange"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="red"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="white"
-            ></button>
-            <br />
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="dark2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="purple2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="light-blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="green2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="orange2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="red2"
-            ></button>
-          </div>
+  <footer class="footer">
+    <div class="container-fluid d-flex justify-content-between">
+      <nav class="pull-left">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="http://www.themekita.com">
+              ThemeKita
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"> Help </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"> Licenses </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="copyright">
+        2024, made with <i class="fa fa-heart heart text-danger"></i> by
+        <a href="http://www.themekita.com">ThemeKita</a>
+      </div>
+      <div>
+        Distributed by
+        <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Custom template | don't include it in your project! -->
+<div class="custom-template">
+  <div class="title">Settings</div>
+  <div class="custom-content">
+    <div class="switcher">
+      <div class="switch-block">
+        <h4>Logo Header</h4>
+        <div class="btnSwitch">
+          <button
+                  type="button"
+                  class="selected changeLogoHeaderColor"
+                  data-color="dark"
+          ></button>
+          <button
+                  type="button"
+                  class="selected changeLogoHeaderColor"
+                  data-color="blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="purple"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="light-blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="green"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="orange"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="red"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="white"
+          ></button>
+          <br />
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="dark2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="purple2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="light-blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="green2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="orange2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="red2"
+          ></button>
         </div>
-        <div class="switch-block">
-          <h4>Navbar Header</h4>
-          <div class="btnSwitch">
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="dark"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="purple"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="light-blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="green"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="orange"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="red"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="white"
-            ></button>
-            <br />
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="dark2"
-            ></button>
-            <button
-                    type="button"
-                    class="selected changeTopBarColor"
-                    data-color="blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="purple2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="light-blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="green2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="orange2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="red2"
-            ></button>
-          </div>
+      </div>
+      <div class="switch-block">
+        <h4>Navbar Header</h4>
+        <div class="btnSwitch">
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="dark"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="purple"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="light-blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="green"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="orange"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="red"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="white"
+          ></button>
+          <br />
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="dark2"
+          ></button>
+          <button
+                  type="button"
+                  class="selected changeTopBarColor"
+                  data-color="blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="purple2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="light-blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="green2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="orange2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="red2"
+          ></button>
         </div>
-        <div class="switch-block">
-          <h4>Sidebar</h4>
-          <div class="btnSwitch">
-            <button
-                    type="button"
-                    class="selected changeSideBarColor"
-                    data-color="white"
-            ></button>
-            <button
-                    type="button"
-                    class="changeSideBarColor"
-                    data-color="dark"
-            ></button>
-            <button
-                    type="button"
-                    class="changeSideBarColor"
-                    data-color="dark2"
-            ></button>
-          </div>
+      </div>
+      <div class="switch-block">
+        <h4>Sidebar</h4>
+        <div class="btnSwitch">
+          <button
+                  type="button"
+                  class="selected changeSideBarColor"
+                  data-color="white"
+          ></button>
+          <button
+                  type="button"
+                  class="changeSideBarColor"
+                  data-color="dark"
+          ></button>
+          <button
+                  type="button"
+                  class="changeSideBarColor"
+                  data-color="dark2"
+          ></button>
         </div>
       </div>
     </div>
-    <div class="custom-toggle">
-      <i class="icon-settings"></i>
-    </div>
   </div>
-  <!-- End Custom template -->
+  <div class="custom-toggle">
+    <i class="icon-settings"></i>
+  </div>
+</div>
+<!-- End Custom template -->
 </div>
 <!--   Core JS Files   -->
 <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
