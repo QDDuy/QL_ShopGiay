@@ -169,4 +169,46 @@ public class AccountDAO  implements DAOInterface<Account>{
         return ketqua; // Trả về kết quả của hoạt động update
     }
 
+    public Account selectUserPass(Account account){
+        Account ketqua=null;
+        try {
+            Connection conn=JDBCUtil.getConnection();
+            String sql="Select *from taikhoan where username=? and password=?";
+            PreparedStatement st= conn.prepareStatement(sql);
+            st.setString(1,account.getUserName());
+            st.setString(2,account.getPassword());
+            ResultSet rs=st.executeQuery();
+            while (rs.next()){
+                String accountID = rs.getString("id_taikhoan");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String role = rs.getString("role");
+                ketqua = new Account(accountID, username, password, role);
+            }
+            JDBCUtil.closeConnection(conn);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ketqua;
+    }
+    public boolean checkUserName(String username) {
+        boolean exists = false;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM taikhoan WHERE username = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, username);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                exists = true;
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return exists;
+    }
+
+
 }
+

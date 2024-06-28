@@ -510,17 +510,7 @@
                             </p>
                             <div class="row">
                               <div class="col-sm-12">
-                                <div class="form-group form-group-default">
-                                  <label>Account ID</label>
-                                  <input
-                                          id="accountId"
-                                          type="text"
-                                          class="form-control"
-                                          placeholder="Account ID"
-                                          name="accountId"
-                                          required
-                                  />
-                                </div>
+
                                 <div class="form-group form-group-default">
                                   <label>Username</label>
                                   <input
@@ -555,6 +545,7 @@
                                     <option value="admin">Admin</option>
                                     <option value="employee">Employee</option>
                                     <option value="manager">Manager</option>
+                                    <option value="kho">Kho</option>
                                   </select>
                                 </div>
                               </div>

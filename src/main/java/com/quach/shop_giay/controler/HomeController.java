@@ -32,13 +32,13 @@ public class HomeController extends HttpServlet {
         List<Product> listP = productDAO.getAll();
         session.setAttribute("listP", listP);
         ShoppingCartDAO shoppingCartDAO = new ShoppingCartDAO();
-        User user = (User) session.getAttribute("checkLogin");
-        if (user == null) {
+        Account account = (Account) session.getAttribute("checkLogin");
+        if (account == null) {
 
         } else {
-            int total = shoppingCartDAO.getTotalCart(user.getUserId());
+            int total = shoppingCartDAO.getTotalCart(account.getAccountId());
             session.setAttribute("total", total);
-            ArrayList<ShoppingCart> shoppingCarts = shoppingCartDAO.getItemUserId(user.getUserId());
+            ArrayList<ShoppingCart> shoppingCarts = shoppingCartDAO.getItemUserId(account.getAccountId());
             session.setAttribute("shoppingCarts", shoppingCarts);
         }
 

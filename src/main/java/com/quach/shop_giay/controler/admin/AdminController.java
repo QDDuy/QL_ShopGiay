@@ -2,11 +2,13 @@ package com.quach.shop_giay.controler.admin;
 
 import com.quach.shop_giay.database.*;
 import com.quach.shop_giay.model.*;
+import com.quach.shop_giay.util.Encryption;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -19,66 +21,57 @@ import java.util.Random;
 public class AdminController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false); // Retrieve existing session without creating a new one
+        if (session == null || session.getAttribute("checkLogin") == null) {
+            // If session or account attribute doesn't exist, redirect to login or show an error
+            resp.sendRedirect(req.getContextPath() + "/login"); // Adjust your login page URL as needed
+            return;
+        }
+
         String url = req.getParameter("url");
         if ("product".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/product.jsp").forward(req, resp);
-            return; // Ensure no further processing
         } else if ("kho".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/kho.jsp").forward(req, resp);
-            return;
         } else if ("tonkho".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/tonkho.jsp").forward(req, resp);
-            return;
         } else if ("donhang".equals(url)) {
             showListOrder(req, resp);
-            return;
         } else if ("chitietdonhang".equals(url)) {
             showChitietDonHang(req, resp);
-            return;
         } else if ("nhanvien".equals(url)) {
             showEmployee(req, resp);
-            return;
         } else if ("khachhang".equals(url)) {
             showUser(req, resp);
-            return;
         } else if ("taikhoan".equals(url)) {
             showTaikhoan(req, resp);
-            return;
         } else if ("danhmuc".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/danhmuc.jsp").forward(req, resp);
-            return;
         } else if ("brand".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
-            return;
         } else if ("deleteOrder".equals(url)) {
             String orderId = req.getParameter("orderId");
             Order order = new Order();
             order.setOrderId(orderId);
             deleteOrder(req, resp, order);
-            return;
         } else if ("deleteEmployee".equals(url)) {
             String employeeId = req.getParameter("id_employe");
             Employees employee = new Employees();
             employee.setIdEmploye(employeeId);
             deleteEmployee(req, resp, employee);
-            return;
         } else if ("deleteAccount".equals(url)) {
             String accountId = req.getParameter("accountId");
             Account account = new Account();
             account.setAccountId(accountId);
             deleteAccount(req, resp, account);
-            return;
-
         } else if ("deleteOrderDetail".equals(url)) {
             String orderDetailId = req.getParameter("orderDetailId");
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderDetailId(orderDetailId);
             deleteOrderDetail(req, resp, orderDetail);
-            return;
-
+        } else {
+            req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
         }
-
-        req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
     }
 
     @Override
@@ -308,9 +301,11 @@ public class AdminController extends HttpServlet {
     }
 
     private void createAccount(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String accountId = req.getParameter("accountId");
+        Random rs=new Random();
+        String accountId = "TK"+System.currentTimeMillis()+rs.nextInt(10);
         String username = req.getParameter("username");
         String password = req.getParameter("password");
+        password= Encryption.toSHA1(password);
         String role = req.getParameter("role");
         Account account = new Account();
         account.setAccountId(accountId);

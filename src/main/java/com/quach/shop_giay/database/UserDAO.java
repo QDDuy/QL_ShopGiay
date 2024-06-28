@@ -66,13 +66,7 @@ public class UserDAO implements DAOInterface<User> {
         }
         return ketqua;
     }
-    public static void main(String[] args) {
 
-        UserDAO userDAO=new UserDAO();
-        User user=new User();
-        user.setUserId("kh1");
-        System.out.println(userDAO.getId(user));
-    }
 
 
     @Override
@@ -94,15 +88,19 @@ public class UserDAO implements DAOInterface<User> {
             System.out.println("Inserted " + ketqua + " row(s) into users table.");
             JDBCUtil.closeConnection(conn); // Close connection after use
         } catch (SQLException e) {
-            e.printStackTrace(); // Print the stack trace for debugging SQL exceptions
-            // Handle specific SQL exceptions here (e.g., constraint violations)
-        } catch (Exception e) {
-            e.printStackTrace(); // Print the stack trace for unexpected exceptions
+            e.printStackTrace();
         }
         return ketqua; // Return the result of the insertion operation
     }
 
+    public static void main(String[] args) {
 
+        UserDAO userDAO=new UserDAO();
+        Account account=new Account();
+        account.setAccountId("tk1");
+        User user=new User("user3",account,"abac","","","","");
+        System.out.println(userDAO.insert(user));
+    }
     @Override
     public int insertAll(ArrayList<User> arr) {
         int ketqua = 0;
@@ -155,24 +153,6 @@ public class UserDAO implements DAOInterface<User> {
             ketqua = st.executeUpdate();
             JDBCUtil.closeConnection(conn);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ketqua;
-    }
-
-
-
-
-    public boolean checkUserName(String userName) {
-        boolean ketqua = false;
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM users WHERE user_name=?";
-            PreparedStatement st = conn.prepareStatement(sql);
-            st.setString(1, userName);
-            ResultSet rs = st.executeQuery();
-            ketqua = rs.next(); // Trả về true nếu có bản ghi, ngược lại trả về false
         } catch (Exception e) {
             e.printStackTrace();
         }
