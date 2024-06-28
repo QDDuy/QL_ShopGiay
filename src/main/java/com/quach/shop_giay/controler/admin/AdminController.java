@@ -1,13 +1,7 @@
 package com.quach.shop_giay.controler.admin;
 
-import com.quach.shop_giay.database.AccountDAO;
-import com.quach.shop_giay.database.EmployeesDAO;
-import com.quach.shop_giay.database.OrderDAO;
-import com.quach.shop_giay.database.UserDAO;
-import com.quach.shop_giay.model.Account;
-import com.quach.shop_giay.model.Employees;
-import com.quach.shop_giay.model.Order;
-import com.quach.shop_giay.model.User;
+import com.quach.shop_giay.database.*;
+import com.quach.shop_giay.model.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -52,7 +46,7 @@ public class AdminController extends HttpServlet {
             showTaikhoan(req, resp);
             return;
         } else if ("danhmuc".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/danhmuc.jsp").forward(req, resp);
+            showDanhmuc(req, resp);
             return;
         } else if ("brand".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
@@ -62,6 +56,12 @@ public class AdminController extends HttpServlet {
             Order order = new Order();
             order.setOrderId(orderId);
             deleteOrder(req, resp, order);
+            return;
+        } else if ("deleteCategory".equals(url)) {
+            String categoryId = req.getParameter("categoryId");
+            Category category = new Category();
+            category.setCategoryId(categoryId);
+            deleteCategory(req, resp, category);
             return;
         }
 
@@ -76,7 +76,12 @@ public class AdminController extends HttpServlet {
         } else if ("editOrder".equals(action)) {
             editOrder(req, resp);
 
+        } else if ("categorycreate".equals(action)) {
+            category(req, resp);
+        } else if ("editCategory".equals(action)) {
+            editCategory(req, resp);
         }
+
     }
 
     private void showListOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -194,6 +199,49 @@ public class AdminController extends HttpServlet {
         System.out.println(listemp);
         req.setAttribute("listemp", listemp);
         req.getRequestDispatcher("/WEB-INF/admin/nhanvien.jsp").forward(req, resp);
+    }
+    private void showDanhmuc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Category category = new Category();
+        List<Category> listemp = categoryDAO.getAll();
+        System.out.println(listemp);
+        req.setAttribute("listemp", listemp);
+        req.getRequestDispatcher("/WEB-INF/admin/danhmuc.jsp").forward(req, resp);
+    }
+    private void category(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String categoryId;
+
+        Random rd = new Random();
+        categoryId = "DM" + System.currentTimeMillis() + rd.nextInt(1000);
+        String categoryName = req.getParameter("Tendanhmuc");
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Category category = new Category(categoryId,categoryName);
+        categoryDAO.insert(category);
+        // Chuyển hướng người dùng về trang quản lý đơn hàng
+        resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
+    }
+    private void deleteCategory(HttpServletRequest req, HttpServletResponse resp, Category category) throws ServletException, IOException {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        categoryDAO.delete(category);
+        System.out.println(categoryDAO.delete(category));
+        req.getSession().setAttribute("successMessage", "Đã xoá danh mục thành công!");
+
+        resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
+    }
+    private void editCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        String categoryId = req.getParameter("category_id");
+        String categoryName = req.getParameter("category_name");
+
+        // Tạo đối tượng Brand
+        Category category = new Category(categoryId, categoryName);
+
+        // Sử dụng DAO để cập nhật brand trong cơ sở dữ liệu
+        CategoryDAO categoryDAO = new CategoryDAO();
+        categoryDAO.update(category);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
     }
 
 

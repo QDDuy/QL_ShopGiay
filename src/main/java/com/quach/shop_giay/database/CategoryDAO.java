@@ -29,10 +29,7 @@ public class CategoryDAO implements DAOInterface<Category> {
         return ketqua;
     }
 
-    public static void main(String[] args) {
-        CategoryDAO categoryDAO=new CategoryDAO();
-        System.out.println(categoryDAO.getAll());
-    }
+
     @Override
     public Category getId(Category category) {
         Category ketqua = null;
@@ -87,9 +84,10 @@ public class CategoryDAO implements DAOInterface<Category> {
         int ketqua = 0;
         try {
             Connection conn = JDBCUtil.getConnection();
-            String sql = "DELETE category WHERE category_id=?";
+            String sql = "DELETE from categorys WHERE category_id=?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, category.getCategoryId());
+
             ketqua = st.executeUpdate();
             return ketqua;
         } catch (Exception e) {
@@ -98,6 +96,13 @@ public class CategoryDAO implements DAOInterface<Category> {
         return ketqua;
     }
 
+    public static void main(String[] args) {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Category category = new Category();
+        category.setCategoryId("A1719546864509296");
+        categoryDAO.delete(category);
+
+    }
     @Override
     public int deleteAll(ArrayList<Category> arr) {
         int ketqua = 0;

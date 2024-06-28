@@ -1,19 +1,20 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.quach.shop_giay.model.Order" %>
+<%@ page import="com.quach.shop_giay.model.Category" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>Quản lý đơn hàng</title>
   <meta
           content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
           name="viewport"
   />
   <link
           rel="icon"
-          href="../assets/img/kaiadmin/favicon.ico"
+          href=""
           type="image/x-icon"
   />
 
@@ -21,7 +22,7 @@
   <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
   <script>
     WebFont.load({
-      google: { families: ["Public Sans:300,400,500,600,700"] },
+      google: {families: ["Public Sans:300,400,500,600,700"]},
       custom: {
         families: [
           "Font Awesome 5 Solid",
@@ -38,12 +39,12 @@
   </script>
 
   <!-- CSS Files -->
-  <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../assets/css/plugins.min.css" />
-  <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="../assets/css/plugins.min.css"/>
+  <link rel="stylesheet" href="../assets/css/kaiadmin.min.css"/>
 
   <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link rel="stylesheet" href="../assets/css/demo.css" />
+  <link rel="stylesheet" href="../assets/css/demo.css"/>
 </head>
 <body>
 <div class="wrapper">
@@ -81,22 +82,24 @@
               class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
       >
         <div class="container-fluid">
-          <nav
-                  class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
-          >
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <button type="submit" class="btn btn-search pe-1">
-                  <i class="fa fa-search search-icon"></i>
-                </button>
-              </div>
-              <input
-                      type="text"
-                      placeholder="Search ..."
-                      class="form-control"
-              />
-            </div>
-          </nav>
+          <%
+            String successMessage = (String) session.getAttribute("successMessage");
+            System.out.println(successMessage);
+            String errorMessage = (String) session.getAttribute("errorMessage");
+            System.out.println(errorMessage);
+            session.removeAttribute("successMessage");
+            session.removeAttribute("errorMessage");
+          %>
+          <% if (successMessage != null && !successMessage.isEmpty()) { %>
+          <div id="successMessage" class="alert alert-success ml-4 alert-slide" role="alert">
+            <%= successMessage %>
+          </div>
+          <% } else if (errorMessage != null && !errorMessage.isEmpty()) { %>
+          <div id="errorMessage" class="alert alert-danger ml-4 alert-slide" role="alert">
+            <%= errorMessage %>
+          </div>
+          <% } %>
+
 
           <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
             <li
@@ -434,34 +437,19 @@
 
     <div class="container">
       <div class="page-inner">
-        <div class="page-header">
-          <h3 class="fw-bold mb-3">DataTables.Net</h3>
-          <ul class="breadcrumbs mb-3">
-            <li class="nav-home">
-              <a href="#">
-                <i class="icon-home"></i>
-              </a>
-            </li>
-            <li class="separator">
-              <i class="icon-arrow-right"></i>
-            </li>
-            <li class="nav-item">
-              <a href="#">Tables</a>
-            </li>
-            <li class="separator">
-              <i class="icon-arrow-right"></i>
-            </li>
-            <li class="nav-item">
-              <a href="#">Datatables</a>
-            </li>
-          </ul>
-        </div>
+        <%--                <%--%>
+        <%--                    String message = request.getAttribute("successMessage").toString();--%>
+        <%--                    if (!message.isEmpty()) {--%>
+        <%--                %>--%>
+        <%--                <p><%=message%></p>--%>
+        <%--                <%}%>--%>
         <div class="row">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
                 <div class="d-flex align-items-center">
-                  <h4 class="card-title">Danh sách Danh mục</h4>
+                  <h4 class="card-title">Danh sách danh mục</h4>
+
                   <button
                           class="btn btn-primary btn-round ms-auto"
                           data-bs-toggle="modal"
@@ -479,8 +467,7 @@
                         id="addRowModal"
                         tabindex="-1"
                         role="dialog"
-                        aria-hidden="true"
-                >
+                        aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header border-0">
@@ -488,358 +475,364 @@
                           <span class="fw-mediumbold"> New</span>
                           <span class="fw-light"> Row </span>
                         </h5>
-                        <button
-                                type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
+
                       </div>
-                      <div class="modal-body">
-                        <p class="small">
-                          Create a new row using this form, make sure you
-                          fill them all
-                        </p>
-                        <form>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <div class="form-group form-group-default">
-                                <label>Name</label>
-                                <input
-                                        id="addName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill name"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
-                              <div class="form-group form-group-default">
-                                <label>Position</label>
-                                <input
-                                        id="addPosition"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill position"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"/>
-                              </div>
-                            </div>
+                      <form method="post" action="admin">
+                        <input type="hidden" name="action" value="categorycreate"/>
+
+                        <div class="modal-body">
+                          <p class="small">
+                            Create a new row using this form, make sure you fill them all
+                          </p>
+
+                          <div class="form-group form-group-default">
+                            <label>Tên danh mục</label>
+                            <input
+                                    id="order_date"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Tên danh mục"
+                                    name="Tendanhmuc"
+                                    required
+                            />
                           </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer border-0">
-                        <button
-                                type="submit"
-                                class="btn btn-primary">
-                          Add
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-danger"
-                                data-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                      </div>
+                        </div>
+
+                        <div class="modal-footer border-0">
+                          <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                      </form>
+
                     </div>
                   </div>
                 </div>
 
                 <div class="table-responsive">
+
                   <table id="add-row" class="display table table-striped table-hover">
                     <thead>
                     <tr>
-                      <th>Mã Đơn Hàng</th>
-                      <th>Mã khách hàng</th>
-                      <th>Ngày đặt hàng</th>
-                      <th>Trạng thái đơn hàng</th>
+                      <th>Mã Danh Mục</th>
+                      <th>Tên Danh Mục</th>
+
                       <th>Action</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Mã Đơn Hàng</th>
-                      <th>Mã khách hàng</th>
-                      <th>Ngày đặt hàng</th>
-                      <th>Trạng thái đơn hàng</th>
+                      <th>Mã Danh Mục</th>
+                      <th>Tên Danh Mục</th>
+
                       <th>Action</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    <% List<Order> listOrders = (List<Order>) request.getAttribute("listOrders");
-                      if (listOrders != null && !listOrders.isEmpty()) {
-                        for (Order order : listOrders) {
+                    <% List<Category> listCategory = (List<Category>) request.getAttribute("listemp");
+
                     %>
+
+                    <% if (listCategory != null && !listCategory.isEmpty()) { %>
+                    <% for (Category category : listCategory) { %>
                     <tr>
-                      <td><%= order.getOrderId() %></td>
-                      <td><%= order.getUser().getUserId() %></td>
-                      <td><%= order.getOrderDate() %></td>
-                      <td><%= order.getOrderStatus() %></td>
+                      <td><%= category.getCategoryId() %>
+                      </td>
+                      <td><%= category.getCategoryName() %>
+                      </td>
+
+
                       <td>
                         <div class="form-button-action">
-                          <button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Sửa">
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteCategory" />
+                            <input type="hidden" name="categoryId" value="<%= category.getCategoryId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit Task" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editOrder<%= category.getCategoryId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button type="button" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
-                            <i class="fa fa-times"></i>
-                          </button>
+
+                          <div class="modal fade" id="editOrder<%= category.getCategoryId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Edit</span>
+                                    <span class="fw-light">Category</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editCategory" />
+                                  <input type="hidden" name="category_id" value="<%= category.getCategoryId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Edit the details of the category</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Category Name</label>
+                                          <input type="text" class="form-control" name="category_name" value="<%= category.getCategoryName() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
-                    <% } // end for loop
-                    } else { // if listOrders is null or empty
-                    %>
+                    <% } %>
+                    <% } else { %>
                     <tr>
-                      <td colspan="5">Không có đơn hàng nào.</td>
+                      <td colspan="5">Không có danh mục nào.</td>
                     </tr>
-                    <% } // end if-else block
-                    %>
+                    <% } %>
+
+
                     </tbody>
                   </table>
-
                 </div>
+
+
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <footer class="footer">
-      <div class="container-fluid d-flex justify-content-between">
-        <nav class="pull-left">
-          <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link" href="http://www.themekita.com">
-                ThemeKita
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"> Help </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"> Licenses </a>
-            </li>
-          </ul>
-        </nav>
-        <div class="copyright">
-          2024, made with <i class="fa fa-heart heart text-danger"></i> by
-          <a href="http://www.themekita.com">ThemeKita</a>
-        </div>
-        <div>
-          Distributed by
-          <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-        </div>
-      </div>
-    </footer>
   </div>
 
-  <!-- Custom template | don't include it in your project! -->
-  <div class="custom-template">
-    <div class="title">Settings</div>
-    <div class="custom-content">
-      <div class="switcher">
-        <div class="switch-block">
-          <h4>Logo Header</h4>
-          <div class="btnSwitch">
-            <button
-                    type="button"
-                    class="selected changeLogoHeaderColor"
-                    data-color="dark"
-            ></button>
-            <button
-                    type="button"
-                    class="selected changeLogoHeaderColor"
-                    data-color="blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="purple"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="light-blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="green"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="orange"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="red"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="white"
-            ></button>
-            <br />
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="dark2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="purple2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="light-blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="green2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="orange2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeLogoHeaderColor"
-                    data-color="red2"
-            ></button>
-          </div>
+  <footer class="footer">
+    <div class="container-fluid d-flex justify-content-between">
+      <nav class="pull-left">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="http://www.themekita.com">
+              ThemeKita
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"> Help </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"> Licenses </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="copyright">
+        2024, made with <i class="fa fa-heart heart text-danger"></i> by
+        <a href="http://www.themekita.com">ThemeKita</a>
+      </div>
+      <div>
+        Distributed by
+        <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Custom template | don't include it in your project! -->
+<div class="custom-template">
+  <div class="title">Settings</div>
+  <div class="custom-content">
+    <div class="switcher">
+      <div class="switch-block">
+        <h4>Logo Header</h4>
+        <div class="btnSwitch">
+          <button
+                  type="button"
+                  class="selected changeLogoHeaderColor"
+                  data-color="dark"
+          ></button>
+          <button
+                  type="button"
+                  class="selected changeLogoHeaderColor"
+                  data-color="blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="purple"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="light-blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="green"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="orange"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="red"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="white"
+          ></button>
+          <br/>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="dark2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="purple2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="light-blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="green2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="orange2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeLogoHeaderColor"
+                  data-color="red2"
+          ></button>
         </div>
-        <div class="switch-block">
-          <h4>Navbar Header</h4>
-          <div class="btnSwitch">
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="dark"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="purple"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="light-blue"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="green"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="orange"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="red"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="white"
-            ></button>
-            <br />
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="dark2"
-            ></button>
-            <button
-                    type="button"
-                    class="selected changeTopBarColor"
-                    data-color="blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="purple2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="light-blue2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="green2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="orange2"
-            ></button>
-            <button
-                    type="button"
-                    class="changeTopBarColor"
-                    data-color="red2"
-            ></button>
-          </div>
+      </div>
+      <div class="switch-block">
+        <h4>Navbar Header</h4>
+        <div class="btnSwitch">
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="dark"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="purple"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="light-blue"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="green"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="orange"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="red"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="white"
+          ></button>
+          <br/>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="dark2"
+          ></button>
+          <button
+                  type="button"
+                  class="selected changeTopBarColor"
+                  data-color="blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="purple2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="light-blue2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="green2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="orange2"
+          ></button>
+          <button
+                  type="button"
+                  class="changeTopBarColor"
+                  data-color="red2"
+          ></button>
         </div>
-        <div class="switch-block">
-          <h4>Sidebar</h4>
-          <div class="btnSwitch">
-            <button
-                    type="button"
-                    class="selected changeSideBarColor"
-                    data-color="white"
-            ></button>
-            <button
-                    type="button"
-                    class="changeSideBarColor"
-                    data-color="dark"
-            ></button>
-            <button
-                    type="button"
-                    class="changeSideBarColor"
-                    data-color="dark2"
-            ></button>
-          </div>
+      </div>
+      <div class="switch-block">
+        <h4>Sidebar</h4>
+        <div class="btnSwitch">
+          <button
+                  type="button"
+                  class="selected changeSideBarColor"
+                  data-color="white"
+          ></button>
+          <button
+                  type="button"
+                  class="changeSideBarColor"
+                  data-color="dark"
+          ></button>
+          <button
+                  type="button"
+                  class="changeSideBarColor"
+                  data-color="dark2"
+          ></button>
         </div>
       </div>
     </div>
-    <div class="custom-toggle">
-      <i class="icon-settings"></i>
-    </div>
   </div>
-  <!-- End Custom template -->
+  <div class="custom-toggle">
+    <i class="icon-settings"></i>
+  </div>
+</div>
+<!-- End Custom template -->
 </div>
 <!--   Core JS Files   -->
 <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
@@ -848,7 +841,7 @@
 
 <!-- jQuery Scrollbar -->
 <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-<!-- Datatables -->
+
 <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
 <!-- Kaiadmin JS -->
 <script src="../assets/js/kaiadmin.min.js"></script>
@@ -910,6 +903,12 @@
       $("#addRowModal").modal("hide");
     });
   });
+  setTimeout(function() {
+    var successMessageDiv = document.getElementById('successMessage');
+    if (successMessageDiv) {
+      successMessageDiv.style.display = 'none';
+    }
+  }, 3000);
 </script>
 </body>
 </html>
