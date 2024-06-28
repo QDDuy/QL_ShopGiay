@@ -2,10 +2,8 @@ package com.quach.shop_giay.controler.admin;
 
 import com.quach.shop_giay.database.*;
 import com.quach.shop_giay.model.*;
-<<<<<<< HEAD
-=======
+
 import com.quach.shop_giay.util.Encryption;
->>>>>>> 502d5725b6b536f19b1a3f70ccc2e1281f88271a
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -49,12 +47,10 @@ public class AdminController extends HttpServlet {
         } else if ("taikhoan".equals(url)) {
             showTaikhoan(req, resp);
         } else if ("danhmuc".equals(url)) {
-<<<<<<< HEAD
+
             showDanhmuc(req, resp);
             return;
-=======
-            req.getRequestDispatcher("/WEB-INF/admin/danhmuc.jsp").forward(req, resp);
->>>>>>> 502d5725b6b536f19b1a3f70ccc2e1281f88271a
+
         } else if ("brand".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
         } else if ("deleteOrder".equals(url)) {
@@ -62,7 +58,6 @@ public class AdminController extends HttpServlet {
             Order order = new Order();
             order.setOrderId(orderId);
             deleteOrder(req, resp, order);
-<<<<<<< HEAD
             return;
         } else if ("deleteCategory".equals(url)) {
             String categoryId = req.getParameter("categoryId");
@@ -70,7 +65,6 @@ public class AdminController extends HttpServlet {
             category.setCategoryId(categoryId);
             deleteCategory(req, resp, category);
             return;
-=======
         } else if ("deleteEmployee".equals(url)) {
             String employeeId = req.getParameter("id_employe");
             Employees employee = new Employees();
@@ -88,7 +82,7 @@ public class AdminController extends HttpServlet {
             deleteOrderDetail(req, resp, orderDetail);
         } else {
             req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
->>>>>>> 502d5725b6b536f19b1a3f70ccc2e1281f88271a
+
         }
     }
 
@@ -99,13 +93,11 @@ public class AdminController extends HttpServlet {
             createOrder(req, resp);
         } else if ("editOrder".equals(action)) {
             editOrder(req, resp);
-<<<<<<< HEAD
-
         } else if ("categorycreate".equals(action)) {
             category(req, resp);
         } else if ("editCategory".equals(action)) {
             editCategory(req, resp);
-=======
+
         } else if ("createEmployee".equals(action)) {
             createEmployee(req, resp);
         } else if ("editEmployee".equals(action)) {
@@ -120,7 +112,7 @@ public class AdminController extends HttpServlet {
             createOrderDetails(req, resp);
         } else if ("orderDetailId".equals(action)) {
             updateOrderDetail(req, resp);
->>>>>>> 502d5725b6b536f19b1a3f70ccc2e1281f88271a
+
         }
 
     }
