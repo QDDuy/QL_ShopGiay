@@ -4,6 +4,7 @@
 <%@ page import="com.quach.shop_giay.model.Brand" %>
 <%@ page import="java.text.BreakIterator" %>
 <%@ page import="java.util.Objects" %>
+<%@ page import="com.quach.shop_giay.model.Account" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -48,10 +49,10 @@
     <%
                 List<Brand> listB = (List<Brand>) session.getAttribute("listB");
                 Object obj = session.getAttribute("checkLogin");
-                User user = null;
+                Account account= null;
 
-                if (obj != null && obj instanceof User) {
-                    user = (User) obj;
+                if (obj != null && obj instanceof Account) {
+                    account = (Account) obj;
                 }
 int total = 0;
 Object totalObj = session.getAttribute("total");
@@ -87,7 +88,8 @@ if (totalObj instanceof Integer) {
 
         <div class="header__top__right__auth">
             <%
-                if (user != null) {
+                if (account != null&& account.getRole().equals("user")) {
+                    System.out.println("accout"+account.getRole());
             %>
             <li class="nav-item dropdown">
                 <a data-mdb-dropdown-init class="nav-link dropdown-toggle d-flex align-items-center" href="#"
@@ -98,6 +100,7 @@ if (totalObj instanceof Integer) {
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li>
+                        <a class="dropdown-item" href="changeInforUser">My profile</a>
                         <a class="dropdown-item" href="changeInforUser">My profile</a>
                     </li>
                     <li>
@@ -176,7 +179,7 @@ if (totalObj instanceof Integer) {
 
                         <div class="header__top__right__auth">
                             <%
-                                if (user != null) {
+                                if (account != null && account.getRole().equals("user")) {
                             %>
                             <li class="nav-item dropdown">
                                 <a data-mdb-dropdown-init class="nav-link dropdown-toggle d-flex align-items-center"

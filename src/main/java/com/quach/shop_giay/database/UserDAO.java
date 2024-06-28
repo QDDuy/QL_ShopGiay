@@ -67,6 +67,32 @@ public class UserDAO implements DAOInterface<User> {
         return ketqua;
     }
 
+    public User getIdTk(User user) {
+        User ketqua = null;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT *FROM users WHERE id_taikhoan=?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, user.getAccount().getAccountId());
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String userId = rs.getString("user_id");
+                String accountId=rs.getString("id_taikhoan");
+                String email = rs.getString("email");
+                String fullName = rs.getString("fullname");
+                String address = rs.getString("address");
+                String phone = rs.getString("phone");
+                String avatar = rs.getString("avatar");
+                Account account=new Account();
+                account.setAccountId(accountId);
+                ketqua = new User(userId, account, email, fullName, address, phone, avatar);
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ketqua;
+    }
 
 
     @Override

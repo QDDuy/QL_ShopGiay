@@ -64,6 +64,7 @@ public class AdminController extends HttpServlet {
             Account account = new Account();
             account.setAccountId(accountId);
             deleteAccount(req, resp, account);
+
         } else if ("deleteOrderDetail".equals(url)) {
             String orderDetailId = req.getParameter("orderDetailId");
             OrderDetail orderDetail = new OrderDetail();
@@ -108,9 +109,21 @@ public class AdminController extends HttpServlet {
     }
 
     private void deleteOrder(HttpServletRequest req, HttpServletResponse resp, Order order) throws ServletException, IOException {
-        OrderDAO orderDAO = new OrderDAO();
-        orderDAO.delete(order);
-        resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
+        try {
+            OrderDAO orderDAO = new OrderDAO();
+            int ketqua = orderDAO.delete(order);
+
+            if (ketqua > 0) {
+                req.getSession().setAttribute("successMessage", "Đã xoá chi tiết đơn hàng thành công!");
+            } else {
+                req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xoá chi tiết đơn hàng. Vui lòng thử lại sau.");
+            }
+        } catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xoá chi tiết đơn hàng. Vui lòng thử lại sau.");
+        } finally {
+            resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+
+        }
     }
 
     private void createOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -287,9 +300,10 @@ public class AdminController extends HttpServlet {
     }
 
 
-    //-----------------------------------------------END CHI TIET DON HANG------------------------------------------
+    //-----------------------------------------------END CHI TIET DON HANG--------------------------------------//
 
 
+    //------------------------------------------TÀI KHOẢN-------------------------------------------------------//
     private void showTaikhoan(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountDAO accountDAO = new AccountDAO();
         Account account = new Account();
@@ -301,11 +315,11 @@ public class AdminController extends HttpServlet {
     }
 
     private void createAccount(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Random rs=new Random();
-        String accountId = "TK"+System.currentTimeMillis()+rs.nextInt(10);
+        Random rs = new Random();
+        String accountId = "TK" + System.currentTimeMillis() + rs.nextInt(10);
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        password= Encryption.toSHA1(password);
+        password = Encryption.toSHA1(password);
         String role = req.getParameter("role");
         Account account = new Account();
         account.setAccountId(accountId);
@@ -334,10 +348,9 @@ public class AdminController extends HttpServlet {
         } catch (Exception e) {
             req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xoá tài khoản. Vui lòng thử lại sau.");
         } finally {
-            resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+            resp.sendRedirect(req.getContextPath() + "/admin?url=taikhoan");
 
         }
-
 
     }
 
@@ -346,7 +359,7 @@ public class AdminController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String role = req.getParameter("role");
-
+        password = Encryption.toSHA1(password);
         // Tạo đối tượng Account mới từ thông tin lấy được
         Account updatedAccount = new Account();
         updatedAccount.setAccountId(accountId);
@@ -367,7 +380,9 @@ public class AdminController extends HttpServlet {
         }
     }
 
+//------------------------------------------END TÀI KHOẢN------------------------------------------------------//
 
+    //--------------------------------------NGƯỜI DÙNG-------------------------------------------------------//
     private void showUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserDAO userDAO = new UserDAO();
         List<User> listUsers = userDAO.getAll();
@@ -413,6 +428,11 @@ public class AdminController extends HttpServlet {
         }
     }
 
+
+    //-------------------------------END USER-------------------------------------------------------------------//
+
+
+    //---------------------------------------NHÂN VIÊN---------------------------------------------------------//
     private void showEmployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         EmployeesDAO employeesDAO = new EmployeesDAO();
         Employees employees = new Employees();
@@ -467,4 +487,5 @@ public class AdminController extends HttpServlet {
     }
 
 
+//------------------------------------END NHÂN VIÊN-------------------------------------------------------------//
 }
