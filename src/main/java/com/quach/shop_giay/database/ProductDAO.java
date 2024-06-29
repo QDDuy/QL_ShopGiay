@@ -127,7 +127,26 @@ public class ProductDAO implements DAOInterface<Product> {
 
     @Override
     public int insert(Product product) {
-        return 0;
+
+        int ketqua = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "INSERT INTO products (product_id ,name , description, price, category_id, brand_id, image , color, size ) VALUES(?,?,?,?,?,?,?,?,?)";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, product.getProductId());
+            st.setString(2, product.getProductName());
+            st.setString(3, product.getDesciption());
+            st.setDouble(4, product.getPrice());
+            st.setString(5, product.getStringCategoryId());
+            st.setString(6, product.getStringBrandId());
+            st.setString(7, product.getImage());
+            st.setString(8, product.getColor());
+            st.setDouble(9, product.getSize());
+            ketqua = st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ketqua;
     }
 
     @Override
@@ -147,7 +166,26 @@ public class ProductDAO implements DAOInterface<Product> {
 
     @Override
     public int update(Product product) {
-        return 0;
+
+        int ketqua=0;
+        try {
+            Connection conn=JDBCUtil.getConnection();
+            String sql=("Update products set name =?, description=?, price=?, category_id=?, brand_id=?, image =?, color=?, size =? where product_id=?");
+            PreparedStatement st= conn.prepareStatement(sql);
+            st.setString(1,product.getProductName());
+            st.setString(2,product.getDesciption());
+            st.setDouble(3,product.getPrice());
+            st.setString(4,product.getStringCategoryId());
+            st.setString(5,product.getStringBrandId());
+            st.setString(6,product.getImage());
+            st.setString(7,product.getColor());
+            st.setDouble(8,product.getSize());
+            st.setString(9,product.getProductId());
+            ketqua=st.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ketqua;
     }
 
     public ArrayList<Product> getBrandProducts(String brandId) {
@@ -246,6 +284,5 @@ public class ProductDAO implements DAOInterface<Product> {
         }
         return ketqua;
     }
-
 
 }

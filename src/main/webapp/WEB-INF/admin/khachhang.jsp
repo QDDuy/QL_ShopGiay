@@ -324,6 +324,10 @@
                                           <input type="text" class="form-control" name="id_taikhoan" value="<%= user.getAccount().getAccountId() %>" />
                                         </div>
                                         <div class="form-group form-group-default">
+                                          <label>Avatar</label>
+                                          <input type="text" class="form-control" name="avatar" value="<%= user.getAvatar() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
                                           <label>Họ và tên</label>
                                           <input type="text" class="form-control" name="fullname" value="<%= user.getFullName() %>" />
                                         </div>

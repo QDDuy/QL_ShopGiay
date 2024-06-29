@@ -14,7 +14,7 @@ public class JDBCUtil {
             String url = "jdbc:mysql://localhost:3306/shop_giay";
             String user = "qdduy";
             String pass = "Duy1762003";
-            // Establish the connection
+
             c = DriverManager.getConnection(url, user, pass);
         } catch (ClassNotFoundException e) {
             System.err.println("MySQL JDBC Driver not found. Include it in your library path.");
