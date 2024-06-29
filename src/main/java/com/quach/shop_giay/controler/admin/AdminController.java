@@ -52,7 +52,8 @@ public class AdminController extends HttpServlet {
             return;
 
         } else if ("brand".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
+            showBrand(req, resp);
+            return;
         } else if ("deleteOrder".equals(url)) {
             String orderId = req.getParameter("orderId");
             Order order = new Order();
@@ -75,6 +76,7 @@ public class AdminController extends HttpServlet {
             Account account = new Account();
             account.setAccountId(accountId);
             deleteAccount(req, resp, account);
+
         } else if ("deleteOrderDetail".equals(url)) {
             String orderDetailId = req.getParameter("orderDetailId");
             OrderDetail orderDetail = new OrderDetail();
@@ -85,10 +87,22 @@ public class AdminController extends HttpServlet {
             Product product = new Product();
             product.setProductId(orderDetailId);
             deleteProduct(req, resp, product);
+        } else if ("deleteBrand".equals(url)) {
+            String brandId = req.getParameter("brandId");
+            Brand brand = new Brand();
+            brand.setBrandId(brandId);
+            deleteBrand(req, resp, brand);
+            return;
+        } else  if("deleteUser".equals(url)) {
+            String userId = req.getParameter("id_user");
+            User user = new User();
+            user.setUserId(userId);
+            deleteUser(req, resp, user);
         }else {
-            req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
 
         }
+
     }
 
     @Override
@@ -117,12 +131,21 @@ public class AdminController extends HttpServlet {
             createOrderDetails(req, resp);
         } else if ("orderDetailId".equals(action)) {
             updateOrderDetail(req, resp);
-
-        } else if ("editProduct".equals(action)) {
+        }else if ("createBrand".equals(action)) {
+            createBrand(req, resp);
+        }else if ("editBrand".equals(action)) {
+            editBrand(req, resp);
+        }else  if("editUser".equals(action)) {
+            editUser(req, resp);
+        }else if ("editProduct".equals(action)) {
             editProduct(req, resp);
-        } else if ("product_create".equals(action)) {}
+        } else if ("product_create".equals(action)) {
             createProduct(req, resp);
+        }
+
+
     }
+
     // --------------------------------------hiển thị product-----------------------------------------------------------
     private void showProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ProductDAO productDAO = new ProductDAO();
@@ -140,7 +163,6 @@ public class AdminController extends HttpServlet {
         req.setAttribute("listBrands", listBrands);
         req.getRequestDispatcher("/WEB-INF/admin/product.jsp").forward(req, resp);
     }
-
 
     private void editProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Lấy các thông tin từ form
@@ -175,6 +197,7 @@ public class AdminController extends HttpServlet {
 
         // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
         resp.sendRedirect(req.getContextPath() + "/admin?url=product");
+
     }
     private void createProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -235,9 +258,19 @@ public class AdminController extends HttpServlet {
     }
 
     private void deleteOrder(HttpServletRequest req, HttpServletResponse resp, Order order) throws ServletException, IOException {
-        OrderDAO orderDAO = new OrderDAO();
-        orderDAO.delete(order);
-        resp.sendRedirect(req.getContextPath() + "/admin?url=donhang");
+        try {
+            OrderDAO orderDAO = new OrderDAO();
+            int ketqua = orderDAO.delete(order);
+            if (ketqua > 0) {
+                req.getSession().setAttribute("successMessage", "Đã xoá chi tiết đơn hàng thành công!");
+            } else {
+                req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xoá chi tiết đơn hàng. Vui lòng thử lại sau.");
+            }
+        } catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xoá chi tiết đơn hàng. Vui lòng thử lại sau.");
+        } finally {
+            resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+        }
     }
 
     private void createOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -414,9 +447,10 @@ public class AdminController extends HttpServlet {
     }
 
 
-    //-----------------------------------------------END CHI TIET DON HANG------------------------------------------
+    //-----------------------------------------------END CHI TIET DON HANG--------------------------------------//
 
 
+    //------------------------------------------TÀI KHOẢN-------------------------------------------------------//
     private void showTaikhoan(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AccountDAO accountDAO = new AccountDAO();
         Account account = new Account();
@@ -428,11 +462,11 @@ public class AdminController extends HttpServlet {
     }
 
     private void createAccount(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Random rs=new Random();
-        String accountId = "TK"+System.currentTimeMillis()+rs.nextInt(10);
+        Random rs = new Random();
+        String accountId = "TK" + System.currentTimeMillis() + rs.nextInt(10);
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        password= Encryption.toSHA1(password);
+        password = Encryption.toSHA1(password);
         String role = req.getParameter("role");
         Account account = new Account();
         account.setAccountId(accountId);
@@ -461,10 +495,9 @@ public class AdminController extends HttpServlet {
         } catch (Exception e) {
             req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xoá tài khoản. Vui lòng thử lại sau.");
         } finally {
-            resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+            resp.sendRedirect(req.getContextPath() + "/admin?url=taikhoan");
 
         }
-
 
     }
 
@@ -473,7 +506,7 @@ public class AdminController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String role = req.getParameter("role");
-
+        password = Encryption.toSHA1(password);
         // Tạo đối tượng Account mới từ thông tin lấy được
         Account updatedAccount = new Account();
         updatedAccount.setAccountId(accountId);
@@ -494,7 +527,9 @@ public class AdminController extends HttpServlet {
         }
     }
 
+//------------------------------------------END TÀI KHOẢN------------------------------------------------------//
 
+    //--------------------------------------NGƯỜI DÙNG-------------------------------------------------------//
     private void showUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserDAO userDAO = new UserDAO();
         List<User> listUsers = userDAO.getAll();
@@ -525,9 +560,7 @@ public class AdminController extends HttpServlet {
         // Tạo đối tượng Account và đặt accountId
         Account newAccount = new Account();
         newAccount.setAccountId(accountId);
-        newUser.setAccount(newAccount); // Đặt đối tượng Account cho User
-
-        // Gọi DAO để thực hiện chèn User vào cơ sở dữ liệu
+        newUser.setAccount(newAccount);
         UserDAO userDAO = new UserDAO();
         int insertedRows = userDAO.insert(newUser);
 
@@ -539,7 +572,32 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/error.jsp");
         }
     }
+    private  void deleteUser(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
+        UserDAO userDAO = new UserDAO();
+        userDAO.delete(user);
+        req.getSession().setAttribute("successMessage", "Đã xoá KH thành công!");
+        resp.sendRedirect(req.getContextPath() + "/admin?url=khachhang");
+    }
+    private  void editUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("id_user");
+        String accountId = req.getParameter("id_taikhoan");
+        String fullName = req.getParameter("fullname");
+        String address = req.getParameter("address");
+        String email = req.getParameter("email");
+        String phone = req.getParameter("phone");
+        String avatar = req.getParameter("avatar");
+        Account account = new Account();
+        account.setAccountId(accountId);
+        User user = new User(userId, account, email, fullName, address, phone, avatar);
+        UserDAO userDao = new UserDAO();
+        userDao.update(user);
+        resp.sendRedirect(req.getContextPath() + "/admin?url=khachhang");
+        System.out.println(userDao.update(user));
+    }
+    //-------------------------------END USER-------------------------------------------------------------------//
 
+
+    //---------------------------------------NHÂN VIÊN---------------------------------------------------------//
     private void showEmployee(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         EmployeesDAO employeesDAO = new EmployeesDAO();
         Employees employees = new Employees();
@@ -558,7 +616,6 @@ public class AdminController extends HttpServlet {
     }
     private void category(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String categoryId;
-
         Random rd = new Random();
         categoryId = "DM" + System.currentTimeMillis() + rd.nextInt(1000);
         String categoryName = req.getParameter("Tendanhmuc");
@@ -573,22 +630,14 @@ public class AdminController extends HttpServlet {
         categoryDAO.delete(category);
         System.out.println(categoryDAO.delete(category));
         req.getSession().setAttribute("successMessage", "Đã xoá danh mục thành công!");
-
         resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
     }
     private void editCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Lấy các thông tin từ form
         String categoryId = req.getParameter("category_id");
         String categoryName = req.getParameter("category_name");
-
-        // Tạo đối tượng Brand
         Category category = new Category(categoryId, categoryName);
-
-        // Sử dụng DAO để cập nhật brand trong cơ sở dữ liệu
         CategoryDAO categoryDAO = new CategoryDAO();
         categoryDAO.update(category);
-
-        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
         resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
     }
 
@@ -635,6 +684,54 @@ public class AdminController extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/admin?url=nhanvien");
         System.out.println(employeesDAO.update(employees));
     }
+    private void showBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        BrandDAO brandDAO = new BrandDAO();
+        List<Brand> listbrand = brandDAO.getAll();
+        System.out.println(listbrand);
+        req.setAttribute("listbrand", listbrand);
+        req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
+    }
+    private void createBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        Random rd = new Random();
+        String brandId = "br" + System.currentTimeMillis() + rd.nextInt(1000);
+        String brandName = req.getParameter("brand_name");
+        String brandImage = req.getParameter("image");
+
+        // Tạo đối tượng Brand
+        Brand brand = new Brand(brandId, brandName, brandImage);
+
+        // Sử dụng DAO để thêm brand mới vào cơ sở dữ liệu
+        BrandDAO brandDAO = new BrandDAO();
+        brandDAO.insert(brand);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
+    }
+    private void editBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        String brandId = req.getParameter("brand_id");
+        String brandName = req.getParameter("brand_name");
+        String brandImage = req.getParameter("image");
+
+        // Tạo đối tượng Brand
+        Brand brand = new Brand(brandId, brandName, brandImage);
+
+        // Sử dụng DAO để cập nhật brand trong cơ sở dữ liệu
+        BrandDAO brandDAO = new BrandDAO();
+        brandDAO.update(brand);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
+    }
+    private void deleteBrand(HttpServletRequest req, HttpServletResponse resp, Brand brand) throws ServletException, IOException {
+        BrandDAO brandDAO = new BrandDAO();
+        brandDAO.delete(brand);
+        System.out.println(brandDAO.delete(brand));
+        req.getSession().setAttribute("successMessage","Da xoa thanh cong");
+        resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
+    }
 
 
+//------------------------------------END NHÂN VIÊN-------------------------------------------------------------//
 }
