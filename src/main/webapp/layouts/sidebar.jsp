@@ -21,7 +21,7 @@
     <div class="sidebar-logo">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
-            <a href="/admin" class="logo">
+            <a href="admin?url=dasboard" class="logo">
                 <img
                         src=""
                         alt="navbar brand"

@@ -36,7 +36,10 @@ public class AdminController extends HttpServlet {
         }
 
         String url = req.getParameter("url");
-        if ("product".equals(url)) {
+        if ("dasboard".equals(url)) {
+            req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
+        }
+        else if ("product".equals(url)) {
             showProduct(req, resp);
         } else if ("kho".equals(url)) {
             showWarehouse(req, resp);
