@@ -35,7 +35,7 @@ public class AdminController extends HttpServlet {
         } else if ("kho".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/kho.jsp").forward(req, resp);
         } else if ("tonkho".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/tonkho.jsp").forward(req, resp);
+            showInventory(req, resp);
         } else if ("donhang".equals(url)) {
             showListOrder(req, resp);
         } else if ("chitietdonhang".equals(url)) {
@@ -82,10 +82,15 @@ public class AdminController extends HttpServlet {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderDetailId(orderDetailId);
             deleteOrderDetail(req, resp, orderDetail);
+        } else if ("deleteInventory".equals(url)) {
+            Integer inventoryId = Integer.parseInt(req.getParameter("inventoryId"));
+            Inventory inventory = new Inventory();
+            inventory.setInventoryId(inventoryId);
+            deleteInventory(req, resp, inventory);
         } else if ("deleteProduct".equals(url)) {
-            String orderDetailId = req.getParameter("productId");
+            String productId = req.getParameter("productId");
             Product product = new Product();
-            product.setProductId(orderDetailId);
+            product.setProductId(productId);
             deleteProduct(req, resp, product);
         } else if ("deleteBrand".equals(url)) {
             String brandId = req.getParameter("brandId");
@@ -143,11 +148,106 @@ public class AdminController extends HttpServlet {
             editProduct(req, resp);
         } else if ("product_create".equals(action)) {
             createProduct(req, resp);
+        } else if("editInventory".equals((action))){
+            editInventory(req, resp);
+        } else if("inventory_create".equals((action))){
+            createInventory(req, resp);
         }
 
 
     }
+    // -----------------------------------------------------------------------------------------------------------------
 
+
+    // -----------------------------------------Inventory---------------------------------------------------------------
+    private void showInventory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        InventoryDAO inventoryDAO = new InventoryDAO();
+        List<Inventory> listInventory = inventoryDAO.getAll();
+        System.out.println(listInventory);
+        req.setAttribute("listInventory", listInventory);
+
+        // Lấy danh sách Category và gửi cho JSP
+        ProductDAO productDAO = new ProductDAO();
+        List<Product> listProduct = productDAO.getAll(); // Lấy danh sách tất cả
+        req.setAttribute("listProducts", listProduct);
+
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        List<Warehouse> listWarehouse = warehouseDAO.getAll(); // Lấy danh sách tất cả
+        req.setAttribute("listWarehouse", listWarehouse);
+        req.getRequestDispatcher("/WEB-INF/admin/tonkho.jsp").forward(req, resp);
+    }
+
+    private void editInventory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        Integer inventoryId = Integer.parseInt(req.getParameter("inventory_id"));
+        String productId = req.getParameter("id_product");
+        String warehouseId = req.getParameter("id_warehouse");
+        Integer quantity = Integer.parseInt(req.getParameter("quantity"));
+        Date ngay_nhap = Date.valueOf(req.getParameter("import_at"));
+
+
+        Product product = new Product();
+        Warehouse warehouse = new Warehouse();
+
+        product.setProductId(productId);
+        warehouse.setWarehouse_id(warehouseId);
+
+
+        Inventory inventory = new Inventory(inventoryId, product, warehouse, quantity, ngay_nhap);
+
+        InventoryDAO inventorytDAO = new InventoryDAO();
+        inventorytDAO.update(inventory);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=tonkho");
+
+    }
+
+
+    private void createInventory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+
+//            Integer inventoryId = Integer.parseInt(req.getParameter("inventory_id"));
+            String productId = req.getParameter("id_product");
+            String warehouseId = req.getParameter("id_warehouse");
+            Integer quantity = Integer.parseInt(req.getParameter("quantity"));
+            Date ngay_nhap = Date.valueOf(req.getParameter("import_at"));
+
+
+            Product product = new Product();
+            Warehouse warehouse = new Warehouse();
+
+            product.setProductId(productId);
+            warehouse.setWarehouse_id(warehouseId);
+
+            Inventory inventory = new Inventory();
+            inventory.setProduct_id(product);
+            inventory.setWarehouse_id(warehouse);
+            inventory.setQuantity(quantity);
+            inventory.setNgay_nhap(ngay_nhap);
+            InventoryDAO inventorytDAO = new InventoryDAO();
+            int a = inventorytDAO.insert(inventory);
+            if(a>0){
+                req.getSession().setAttribute("successMessage", "Đã thêm sản phẩm thành công!");
+            }
+            System.out.println(product);
+        }catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
+            e.printStackTrace();
+        } finally {
+            resp.sendRedirect(req.getContextPath() + "/admin?url=tonkho");
+        }
+
+    }
+
+
+    private void deleteInventory(HttpServletRequest req, HttpServletResponse resp, Inventory inventory) throws ServletException, IOException {
+        InventoryDAO inventoryDAO = new InventoryDAO();
+        inventoryDAO.delete(inventory);
+        resp.sendRedirect(req.getContextPath() + "/admin?url=tonkho");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     // --------------------------------------hiển thị product-----------------------------------------------------------
     private void showProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ProductDAO productDAO = new ProductDAO();

@@ -189,7 +189,20 @@ public class ProductDAO implements DAOInterface<Product> {
 
     @Override
     public int delete(Product product) {
-        return 0;
+
+        int ketqua=0;
+        try {
+            Connection conn=JDBCUtil.getConnection();
+            String sql="Delete from products where product_id=?";
+            PreparedStatement st=conn.prepareStatement(sql);
+            st.setString(1,product.getProductId());
+            ketqua= st.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ketqua;
+
     }
 
     @Override

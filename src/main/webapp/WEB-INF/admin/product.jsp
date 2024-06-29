@@ -6,11 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page import="java.util.List" %>
-<%@ page import="com.quach.shop_giay.model.Order" %>
 <%@ page import="com.quach.shop_giay.model.Product" %>
-<%@ page import="com.quach.shop_giay.database.CategoryDAO" %>
-<%@ page import="com.quach.shop_giay.database.BrandDAO" %>
-<%@ page import="java.util.Map" %>
 <%@ page import="com.quach.shop_giay.model.Category" %>
 <%@ page import="com.quach.shop_giay.model.Brand" %>
 
@@ -228,17 +224,17 @@
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Product Id</th>
-                      <th>Product Name</th>
-                      <th>Descripsion</th>
-                      <th>Price</th>
-                      <th>Category</th>
-                      <th>Brand</th>
-                      <th>Image</th>
-                      <th>Color</th>
-                      <th>Size</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
 
-                      <th>Action</th>
+                      <th></th>
                     </tr>
                     </tfoot>
                     <tbody>
@@ -656,7 +652,7 @@
 
     // Add Row
     $("#add-row").DataTable({
-      pageLength: 5,
+      pageLength: 2,
     });
 
     var action =
