@@ -184,7 +184,7 @@
                               </div>
 
                               <div class="form-group form-group-default">
-                                <label>Import_at</label>
+                                
                                 <input type="hidden" id="currentDate1" name="import_at">
                                 <script>
                                   const currentDateInput = document.getElementById("currentDate1");
@@ -308,7 +308,7 @@
                                         </div>
 
                                         <div class="form-group form-group-default">
-                                          <label>Import_at</label>
+
                                           <input type="date" id="currentDate" name="import_at">
                                           <script>
                                             const currentDateInput = document.getElementById("currentDate");
