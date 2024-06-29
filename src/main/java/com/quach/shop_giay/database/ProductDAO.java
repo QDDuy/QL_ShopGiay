@@ -124,6 +124,39 @@ public class ProductDAO implements DAOInterface<Product> {
         return ketqua;
     }
 
+    public ArrayList<Product> searchProducts(String query) {
+        ArrayList<Product> results = new ArrayList<>();
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM products WHERE name LIKE ? OR description LIKE ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, "%" + query + "%");
+            st.setString(2, "%" + query + "%");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String productId = rs.getString("product_id");
+                String productName = rs.getString("name");
+                String description = rs.getString("description");
+                double price = rs.getDouble("price");
+                String categoryId = rs.getString("category_id");
+                String brandId = rs.getString("brand_id");
+                String color = rs.getString("color");
+                double size = rs.getDouble("size");
+                String image = rs.getString("image");
+                Brand brand = new Brand();
+                brand.setBrandId(brandId);
+                Category category = new Category();
+                category.setCategoryId(categoryId);
+                Product product = new Product(productId, productName, description, price, category, brand, image, color, size);
+
+                results.add(product);
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
 
     @Override
     public int insert(Product product) {

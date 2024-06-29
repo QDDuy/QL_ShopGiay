@@ -22,8 +22,6 @@ public class ShopController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String categoryId=req.getParameter("id");
         ProductDAO productDAO=new ProductDAO();
-
-        Product product=new Product();
         if(categoryId!=null){
             ArrayList<Product> listCP=productDAO.getCategoryProducts(categoryId);
             req.setAttribute("listCP",listCP);
@@ -34,6 +32,19 @@ public class ShopController extends HttpServlet {
 
         List<Product> productNew=productDAO.getNewProducts();
         req.setAttribute("listPN",productNew);
+
+        String query = req.getParameter("search");
+
+        if (query == null || query.isEmpty()) {
+            req.getRequestDispatcher("/WEB-INF/user/shop.jsp").forward(req, resp);
+
+            return;
+        }
+
+        List<Product> searchResults = productDAO.searchProducts(query);
+
+        req.setAttribute("searchResults", searchResults);
+
         req.getRequestDispatcher("/WEB-INF/user/shop.jsp").forward(req, resp);
     }
 

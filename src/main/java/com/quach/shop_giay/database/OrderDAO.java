@@ -3,11 +3,8 @@ package com.quach.shop_giay.database;
 import com.quach.shop_giay.model.*;
 
 import javax.lang.model.type.PrimitiveType;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
-import java.sql.Date;
 
 public class OrderDAO implements DAOInterface<Order> {
     @Override
@@ -84,12 +81,7 @@ public class OrderDAO implements DAOInterface<Order> {
         }
         return order;
     }
-    public static void main(String[] args) {
-        Order order=new Order();
-        order.setOrderId("DH1719534386795339");
-        OrderDAO orderDAO=new OrderDAO();
-        System.out.println(orderDAO.getId(order));
-    }
+
 
     @Override
     public int insert(Order order) {
@@ -160,5 +152,31 @@ public class OrderDAO implements DAOInterface<Order> {
         }
         return ketqua;
     }
+    public int countTotalOrders() throws SQLException, SQLException {
+        int totalOrders = 0;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "SELECT COUNT(*) AS total_orders FROM orders";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                totalOrders = rs.getInt("total_orders");
+            }
+        } finally {
+            JDBCUtil.closeConnection(conn);
+        }
+
+        return totalOrders;
+    }
+
+    public static void main(String[] args) throws SQLException {
+        OrderDAO orderDAO= new OrderDAO();
+       int result= orderDAO.countTotalOrders();
+        System.out.println(result);
+    }
 }
