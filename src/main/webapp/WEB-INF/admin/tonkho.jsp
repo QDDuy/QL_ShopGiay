@@ -1,6 +1,12 @@
 
+<%@ page import="java.util.List" %>
+<%@ page import="com.quach.shop_giay.model.Inventory" %>
+<%@ page import="com.quach.shop_giay.model.Product" %>
+<%@ page import="com.quach.shop_giay.model.Warehouse" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,6 +88,9 @@
     </div>
 
     <div class="container">
+      <%List<Product> listProducts = (List<Product>) request.getAttribute("listProducts");
+        List<Warehouse> listWarehouse = (List<Warehouse>) request.getAttribute("listWarehouse");
+      %>
       <div class="page-inner">
         <div class="page-header">
           <h3 class="fw-bold mb-3">DataTables.Net</h3>
@@ -137,74 +146,60 @@
                           <span class="fw-mediumbold"> New</span>
                           <span class="fw-light"> Row </span>
                         </h5>
-                        <button
-                                type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
+
                       </div>
-                      <div class="modal-body">
-                        <p class="small">
-                          Create a new row using this form, make sure you
-                          fill them all
-                        </p>
-                        <form>
+                      <form method="post" action="admin">
+                        <input type="hidden" name="action" value="inventory_create"/>
+
+                        <div class="modal-body">
+                          <p class="small">
+                            Create a new row using this form, make sure you fill them all
+                          </p>
+
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group form-group-default">
-                                <label>Name</label>
-                                <input
-                                        id="addName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill name"
-                                />
+                                <label>Product Name</label>
+                                <select name="id_product">
+                                  <%
+                                    for (Product product : listProducts) {
+                                  %>
+                                  <option value="<%= product.getProductId() %>"> <%= product.getProductName() %></option>
+                                  <% } %>
+                                </select>
                               </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
                               <div class="form-group form-group-default">
-                                <label>Position</label>
-                                <input
-                                        id="addPosition"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill position"
-                                />
+                                <label>Warehouse Name</label>
+                                <select name="id_warehouse">
+                                  <%
+                                    for (Warehouse warehouse : listWarehouse) {
+                                  %>
+                                  <option value="<%= warehouse.getWarehouse_id() %>"> <%= warehouse.getWarehouse_name() %></option>
+                                  <% } %>
+                                </select>
                               </div>
-                            </div>
-                            <div class="col-md-6">
                               <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"
-                                />
+                                <label>Quantity</label>
+                                <input type="number" class="form-control" name="quantity" value="" />
+                              </div>
+
+                              <div class="form-group form-group-default">
+                                <label>Import_at</label>
+                                <input type="hidden" id="currentDate1" name="import_at">
+                                <script>
+                                  const currentDateInput = document.getElementById("currentDate1");
+                                  const today = new Date().toISOString().split("T")[0]; // Lấy ngày ở định dạng YYYY-MM-DD
+                                  currentDateInput.value = today;
+                                </script>
                               </div>
                             </div>
                           </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer border-0">
-                        <button
-                                type="submit"
-                                class="btn btn-primary"
+                        </div>
+                        <div class="modal-footer border-0">
+                          <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                      </form>
 
-                        >
-                          Add
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-danger"
-                                data-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -216,291 +211,132 @@
                   >
                     <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
+                      <th>Id inventory</th>
+                      <th>Id Product</th>
+                      <th>Id Warehouse</th>
+                      <th>Quantity</th>
+                      <th>Import at</th>
                       <th style="width: 10%">Action</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Action</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
                     </tr>
                     </tfoot>
                     <tbody>
+                    <% List<Inventory> listInventory = (List<Inventory>) request.getAttribute("listInventory");
+
+
+
+                    %>
+
+                    <% if (listInventory != null && !listInventory.isEmpty()) { %>
+                    <% for (Inventory inventory : listInventory) { %>
                     <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
+                      <td><%= inventory.getInventoryId() %>
+                      </td>
+                      <td><%= inventory.getProduct_id_str() %>
+                      </td>
+                      <td><%= inventory.getWarehouse_id_str() %>
+                      </td>
+                      <td><%= inventory.getQuantity() %>
+                      </td>
+                      <td><%= inventory.getNgay_nhap() %>
+                      </td>
+
                       <td>
                         <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteInventory" />
+                            <input type="hidden" name="inventoryId" value="<%= inventory.getInventoryId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit Task" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editOrder<%= inventory.getInventoryId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
+
+                          <div class="modal fade" id="editOrder<%= inventory.getInventoryId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Edit</span>
+                                    <span class="fw-light">Inventory</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editInventory" />
+                                  <input type="hidden" name="inventory_id" value="<%= inventory.getInventoryId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Edit the details of the Inventory</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Product Name</label>
+                                          <select name="id_product">
+                                            <%
+                                              for (Product product : listProducts) {
+                                            %>
+                                            <option value="<%= product.getProductId() %>"> <%= product.getProductName() %></option>
+                                            <% } %>
+                                          </select>
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Warehouse Name</label>
+                                          <select name="id_warehouse">
+                                            <%
+                                              for (Warehouse warehouse : listWarehouse) {
+                                            %>
+                                            <option value="<%= warehouse.getWarehouse_id() %>"> <%= warehouse.getWarehouse_name() %></option>
+                                            <% } %>
+                                          </select>
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Quantity</label>
+                                          <input type="number" class="form-control" name="quantity" value="<%= inventory.getQuantity() %>" />
+                                        </div>
+
+                                        <div class="form-group form-group-default">
+                                          <label>Import_at</label>
+                                          <input type="date" id="currentDate" name="import_at">
+                                          <script>
+                                            const currentDateInput = document.getElementById("currentDate");
+                                            const today = new Date().toISOString().split("T")[0]; // Lấy ngày ở định dạng YYYY-MM-DD
+                                            currentDateInput.value = today;
+                                          </script>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
+                    <% } %>
+                    <% } else { %>
                     <tr>
-                      <td>Garrett Winters</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
+                      <td colspan="10">Không có danh mục nào.</td>
                     </tr>
-                    <tr>
-                      <td>Ashton Cox</td>
-                      <td>Junior Technical Author</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Cedric Kelly</td>
-                      <td>Senior Javascript Developer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Airi Satou</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Brielle Williamson</td>
-                      <td>Integration Specialist</td>
-                      <td>New York</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Herrod Chandler</td>
-                      <td>Sales Assistant</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Rhona Davidson</td>
-                      <td>Integration Specialist</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Colleen Hurst</td>
-                      <td>Javascript Developer</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Sonya Frost</td>
-                      <td>Software Engineer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <% } %>
+
+
                     </tbody>
                   </table>
                 </div>
