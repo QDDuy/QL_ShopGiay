@@ -33,7 +33,7 @@ public class AdminController extends HttpServlet {
         if ("product".equals(url)) {
             showProduct(req, resp);
         } else if ("kho".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/kho.jsp").forward(req, resp);
+            showWarehouse(req, resp);
         } else if ("tonkho".equals(url)) {
             showInventory(req, resp);
         } else if ("donhang".equals(url)) {
@@ -98,6 +98,11 @@ public class AdminController extends HttpServlet {
             brand.setBrandId(brandId);
             deleteBrand(req, resp, brand);
             return;
+        } else if ("deleteWarehouse".equals(url)) {
+            String warehouseId = req.getParameter("warehouseId");
+            Warehouse warehouse = new Warehouse();
+            warehouse.setWarehouse_id(warehouseId);
+            deleteWarehouse(req, resp, warehouse);
         } else  if("deleteUser".equals(url)) {
             String userId = req.getParameter("id_user");
             User user = new User();
@@ -152,12 +157,73 @@ public class AdminController extends HttpServlet {
             editInventory(req, resp);
         } else if("inventory_create".equals((action))){
             createInventory(req, resp);
+        } else if("editWarehouse".equals((action))){
+            editWarehouse(req, resp);
+        } else if("createWarehouse".equals((action))){
+            createWarehouse(req, resp);
         }
 
 
     }
     // -----------------------------------------------------------------------------------------------------------------
+    // =============================================Warehouse===========================================================
+    private void showWarehouse(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        List<Warehouse> listWarehouse = warehouseDAO.getAll();
+        System.out.println(listWarehouse);
+        req.setAttribute("listWarehouse", listWarehouse);
 
+        req.getRequestDispatcher("/WEB-INF/admin/kho.jsp").forward(req, resp);
+    }
+
+
+    private void createWarehouse(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        Random rd = new Random();
+        String warehouseId = "br" + System.currentTimeMillis() + rd.nextInt(1000);
+        String warehouseName = req.getParameter("warehouseName");
+        String warehouseAddress = req.getParameter("warehouseAddress");
+
+        // Tạo đối tượng Brand
+        Warehouse warehouse = new Warehouse(warehouseId, warehouseName, warehouseAddress);
+
+        // Sử dụng DAO để thêm brand mới vào cơ sở dữ liệu
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        warehouseDAO.insert(warehouse);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=kho");
+    }
+
+    private void editWarehouse(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+
+        String warehouseId = req.getParameter("warehouse_id");
+        String warehouseName = req.getParameter("warehouse_name");
+        String warehouseAddress = req.getParameter("warehouse_address");
+
+        // Tạo đối tượng Brand
+        Warehouse warehouse = new Warehouse(warehouseId, warehouseName, warehouseAddress);
+
+        // Sử dụng DAO để cập nhật brand trong cơ sở dữ liệu
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        warehouseDAO.update(warehouse);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=kho");
+    }
+
+    private void deleteWarehouse(HttpServletRequest req, HttpServletResponse resp, Warehouse warehouse) throws ServletException, IOException {
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        warehouseDAO.delete(warehouse);
+        req.getSession().setAttribute("successMessage", "Da xoa thanh cong");
+        resp.sendRedirect(req.getContextPath() + "/admin?url=kho");
+    }
+
+
+
+
+    //==========================================end_warehouse===========================================================
 
     // -----------------------------------------Inventory---------------------------------------------------------------
     private void showInventory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -242,10 +308,18 @@ public class AdminController extends HttpServlet {
 
 
     private void deleteInventory(HttpServletRequest req, HttpServletResponse resp, Inventory inventory) throws ServletException, IOException {
-        InventoryDAO inventoryDAO = new InventoryDAO();
-        inventoryDAO.delete(inventory);
-        resp.sendRedirect(req.getContextPath() + "/admin?url=tonkho");
-    }
+        try {
+            InventoryDAO inventoryDAO = new InventoryDAO();
+            inventoryDAO.delete(inventory);
+            req.getSession().setAttribute("successMessage", "Đã xóa thành công!");
+        }catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xóa. Vui lòng thử lại sau.");
+            e.printStackTrace();
+        } finally {
+            resp.sendRedirect(req.getContextPath() + "/admin?url=tonkho");
+        }
+        }
+
 
     // -----------------------------------------------------------------------------------------------------------------
     // --------------------------------------hiển thị product-----------------------------------------------------------
@@ -331,7 +405,7 @@ public class AdminController extends HttpServlet {
             }
             System.out.println(product);
         }catch (Exception e) {
-            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm sản phẩm. Vui lòng thử lại sau.");
             e.printStackTrace();
         } finally {
             resp.sendRedirect(req.getContextPath() + "/admin?url=product");
@@ -340,9 +414,19 @@ public class AdminController extends HttpServlet {
     }
 
     private void deleteProduct(HttpServletRequest req, HttpServletResponse resp, Product product) throws ServletException, IOException {
-        ProductDAO productDAO = new ProductDAO();
-        productDAO.delete(product);
-        resp.sendRedirect(req.getContextPath() + "/admin?url=product");
+        try {
+
+
+            ProductDAO productDAO = new ProductDAO();
+            productDAO.delete(product);
+            req.getSession().setAttribute("successMessage", "Đã xóa sản phẩm thành công!");
+        }catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi xóa. Vui lòng thử lại sau.");
+            e.printStackTrace();
+        } finally {
+            resp.sendRedirect(req.getContextPath() + "/admin?url=product");
+        }
+
     }
     // ---------------------------------------end product --------------------------------------------------------------
 
