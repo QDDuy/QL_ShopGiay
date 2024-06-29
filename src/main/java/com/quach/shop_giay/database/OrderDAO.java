@@ -173,10 +173,25 @@ public class OrderDAO implements DAOInterface<Order> {
 
         return totalOrders;
     }
-
+    public double getTotalRevenue() {
+        double totalRevenue = 0.0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT SUM(total_amount) AS total_revenue FROM orders WHERE order_status = 'Đã thanh toán'";
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                totalRevenue = rs.getDouble("total_revenue");
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalRevenue;
+    }
     public static void main(String[] args) throws SQLException {
         OrderDAO orderDAO= new OrderDAO();
-       int result= orderDAO.countTotalOrders();
+       double result= orderDAO.getTotalRevenue();
         System.out.println(result);
     }
 }

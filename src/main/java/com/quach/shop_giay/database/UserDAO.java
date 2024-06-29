@@ -193,6 +193,27 @@ public class UserDAO implements DAOInterface<User> {
         }
         return ketqua;
     }
+    public int getTotalUsers() {
+        int totalUsers = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT COUNT(*) AS total_users FROM users";
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                totalUsers = rs.getInt("total_users");
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalUsers;
+    }
 
+    public static void main(String[] args) {
+        UserDAO userDAO=new UserDAO();
+        int kq=userDAO.getTotalUsers();
+        System.out.println(kq);
+    }
 
 }

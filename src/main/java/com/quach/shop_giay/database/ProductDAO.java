@@ -330,5 +330,20 @@ public class ProductDAO implements DAOInterface<Product> {
         }
         return ketqua;
     }
-
+    public int getTotalProductCount() {
+        int totalCount = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT COUNT(*) AS total_count FROM products";
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                totalCount = rs.getInt("total_count");
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalCount;
+    }
 }

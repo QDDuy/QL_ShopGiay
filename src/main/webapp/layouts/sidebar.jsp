@@ -21,9 +21,9 @@
     <div class="sidebar-logo">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
-            <a href="home" class="logo">
+            <a href="/admin" class="logo">
                 <img
-                        src="../../assets/img/kaiadmin/logo_light.svg"
+                        src=""
                         alt="navbar brand"
                         class="navbar-brand"
                         height="20"
@@ -46,25 +46,8 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <ul class="nav nav-secondary">
-                <li class="nav-item active">
-                    <a
-                            data-bs-toggle="collapse"
-                            href="#dashboard"
-                            class="collapsed"
-                            aria-expanded="false"
-                    >
-                        <i class="fas fa-home"></i>
-                        <p>Dashboard</p>
-                        <span class="caret"></span>
-                    </a>
 
-                </li>
-                <li class="nav-section">
-                <span class="sidebar-mini-icon">
-                  <i class="fa fa-ellipsis-h"></i>
-                </span>
-                    <h4 class="text-section">Components</h4>
-                </li>
+
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#base">
                         <i class="fas fa-layer-group"></i>

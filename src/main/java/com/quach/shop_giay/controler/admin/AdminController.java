@@ -24,7 +24,13 @@ public class AdminController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false); // Retrieve existing session without creating a new one
         if (session == null || session.getAttribute("checkLogin") == null) {
-  // If session or account attribute doesn't exist, redirect to login or show an error
+            // If session or account attribute doesn't exist, redirect to login or show an error
+            resp.sendRedirect(req.getContextPath() + "/login"); // Adjust your login page URL as needed
+            return;
+        }
+
+        Account account = (Account) session.getAttribute("checkLogin");
+        if (account.getRole().equals("user")) {
             resp.sendRedirect(req.getContextPath() + "/login"); // Adjust your login page URL as needed
             return;
         }
@@ -47,25 +53,19 @@ public class AdminController extends HttpServlet {
         } else if ("taikhoan".equals(url)) {
             showTaikhoan(req, resp);
         } else if ("danhmuc".equals(url)) {
-
             showDanhmuc(req, resp);
-            return;
-
         } else if ("brand".equals(url)) {
             showBrand(req, resp);
-            return;
         } else if ("deleteOrder".equals(url)) {
             String orderId = req.getParameter("orderId");
             Order order = new Order();
             order.setOrderId(orderId);
             deleteOrder(req, resp, order);
-            return;
         } else if ("deleteCategory".equals(url)) {
             String categoryId = req.getParameter("categoryId");
             Category category = new Category();
             category.setCategoryId(categoryId);
             deleteCategory(req, resp, category);
-            return;
         } else if ("deleteEmployee".equals(url)) {
             String employeeId = req.getParameter("id_employe");
             Employees employee = new Employees();
@@ -73,10 +73,9 @@ public class AdminController extends HttpServlet {
             deleteEmployee(req, resp, employee);
         } else if ("deleteAccount".equals(url)) {
             String accountId = req.getParameter("accountId");
-            Account account = new Account();
-            account.setAccountId(accountId);
-            deleteAccount(req, resp, account);
-
+            Account account1 = new Account();
+            account1.setAccountId(accountId);
+            deleteAccount(req, resp, account1);
         } else if ("deleteOrderDetail".equals(url)) {
             String orderDetailId = req.getParameter("orderDetailId");
             OrderDetail orderDetail = new OrderDetail();
@@ -97,17 +96,15 @@ public class AdminController extends HttpServlet {
             Brand brand = new Brand();
             brand.setBrandId(brandId);
             deleteBrand(req, resp, brand);
-            return;
-        } else  if("deleteUser".equals(url)) {
+        } else if ("deleteUser".equals(url)) {
             String userId = req.getParameter("id_user");
             User user = new User();
             user.setUserId(userId);
             deleteUser(req, resp, user);
-        }else {
-        req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
-
+        } else {
+            // Handle unknown URL or default behavior
+            req.getRequestDispatcher("/WEB-INF/admin/login.jsp").forward(req, resp);
         }
-
     }
 
 
@@ -138,19 +135,19 @@ public class AdminController extends HttpServlet {
         } else if ("orderDetailId".equals(action)) {
             updateOrderDetail(req, resp);
 
-        }else if ("createBrand".equals(action)) {
+        } else if ("createBrand".equals(action)) {
             createBrand(req, resp);
-        }else if ("editBrand".equals(action)) {
+        } else if ("editBrand".equals(action)) {
             editBrand(req, resp);
-        }else  if("editUser".equals(action)) {
+        } else if ("editUser".equals(action)) {
             editUser(req, resp);
-        }else if ("editProduct".equals(action)) {
+        } else if ("editProduct".equals(action)) {
             editProduct(req, resp);
         } else if ("product_create".equals(action)) {
             createProduct(req, resp);
-        } else if("editInventory".equals((action))){
+        } else if ("editInventory".equals((action))) {
             editInventory(req, resp);
-        } else if("inventory_create".equals((action))){
+        } else if ("inventory_create".equals((action))) {
             createInventory(req, resp);
         }
 
@@ -227,11 +224,11 @@ public class AdminController extends HttpServlet {
             inventory.setNgay_nhap(ngay_nhap);
             InventoryDAO inventorytDAO = new InventoryDAO();
             int a = inventorytDAO.insert(inventory);
-            if(a>0){
+            if (a > 0) {
                 req.getSession().setAttribute("successMessage", "Đã thêm sản phẩm thành công!");
             }
             System.out.println(product);
-        }catch (Exception e) {
+        } catch (Exception e) {
             req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
             e.printStackTrace();
         } finally {
@@ -326,11 +323,11 @@ public class AdminController extends HttpServlet {
 
             ProductDAO productDAO = new ProductDAO();
             int a = productDAO.insert(product);
-            if(a>0){
+            if (a > 0) {
                 req.getSession().setAttribute("successMessage", "Đã thêm sản phẩm thành công!");
             }
             System.out.println(product);
-        }catch (Exception e) {
+        } catch (Exception e) {
             req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
             e.printStackTrace();
         } finally {
@@ -345,8 +342,6 @@ public class AdminController extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/admin?url=product");
     }
     // ---------------------------------------end product --------------------------------------------------------------
-
-
 
 
     //  start  Đơn hàng
@@ -466,30 +461,50 @@ public class AdminController extends HttpServlet {
             OrderDAO orderDAO = new OrderDAO();
             Order order = new Order();
             order.setOrderId(orderId);
+
+            ProductDAO productDAO = new ProductDAO();
             Product product = new Product();
             product.setProductId(productId);
-            ProductDAO productDAO = new ProductDAO();
 
+            // Check if order and product exist
             if (orderDAO.getId(order) == null) {
                 req.getSession().setAttribute("errorMessage", "Mã đơn hàng không hợp lệ. Vui lòng nhập lại.");
-
-            } else if (productDAO.getId(product) == null) {
-                req.getSession().setAttribute("errorMessage", "Mã sản phẩm không hợp lệ. Vui lòng nhập lại.");
-
-            } else {
-                OrderDetail orderDetail = new OrderDetail(orderDetailId, order, product, quantity, unitPrice);
-                OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
-                orderDetailDAO.insert(orderDetail);
-                req.getSession().setAttribute("successMessage", "Đã thêm đơn hàng thành công!");
-
+                resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+                return;
             }
+
+            if (productDAO.getId(product) == null) {
+                req.getSession().setAttribute("errorMessage", "Mã sản phẩm không hợp lệ. Vui lòng nhập lại.");
+                resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+                return;
+            }
+
+            InventoryDAO inventoryDAO = new InventoryDAO();
+            int currentQuantity = inventoryDAO.getQuantityByProductId(productId);
+
+            // Check if there is enough quantity in inventory
+            if (currentQuantity < quantity) {
+                req.getSession().setAttribute("errorMessage", "Sản phẩm trong kho không đủ để thêm vào đơn hàng.");
+                resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+                return;
+            }
+
+            // Proceed with adding order detail
+            OrderDetail orderDetail = new OrderDetail(orderDetailId, order, product, quantity, unitPrice);
+            OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+            orderDetailDAO.insert(orderDetail);
+            req.getSession().setAttribute("successMessage", "Đã thêm chi tiết đơn hàng thành công!");
+
         } catch (Exception e) {
-            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm chi tiết đơn hàng. Vui lòng thử lại sau.");
             e.printStackTrace();
         } finally {
-            resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+            if (!resp.isCommitted()) {
+                resp.sendRedirect(req.getContextPath() + "/admin?url=chitietdonhang");
+            }
         }
     }
+
 
     private void updateOrderDetail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -670,13 +685,15 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/error.jsp");
         }
     }
-    private  void deleteUser(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
+
+    private void deleteUser(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
         UserDAO userDAO = new UserDAO();
         userDAO.delete(user);
         req.getSession().setAttribute("successMessage", "Đã xoá KH thành công!");
         resp.sendRedirect(req.getContextPath() + "/admin?url=khachhang");
     }
-    private  void editUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+    private void editUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("id_user");
         String accountId = req.getParameter("id_taikhoan");
         String fullName = req.getParameter("fullname");

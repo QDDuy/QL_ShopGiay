@@ -80,8 +80,8 @@
                         />
                     </div>
                     <span class="profile-username">
-                      <span class="op-7">Hi,</span>
-                      <span class="fw-bold">Hizrian</span>
+                      <span class="op-7">Chào,</span>
+                      <span class="fw-bold">Bạn</span>
                     </span>
                 </a>
 
@@ -96,20 +96,10 @@
                                             class="avatar-img rounded"
                                     />
                                 </div>
-                                <div class="u-text">
-                                    <h4>Hizrian</h4>
-                                    <p class="text-muted">hello@example.com</p>
-                                    <a
-                                            href="profile.html"
-                                            class="btn btn-xs btn-secondary btn-sm"
-                                    >View Profile</a
-                                    >
-                                </div>
                             </div>
                         </li>
                         <li>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">My Profile</a>
                             <a class="dropdown-item" href="user?act=logout">Logout</a>
                         </li>
                     </div>

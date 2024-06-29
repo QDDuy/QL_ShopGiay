@@ -2,11 +2,8 @@ package com.quach.shop_giay.database;
 
 import com.quach.shop_giay.model.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
-import java.sql.Date;
 
 public class InventoryDAO implements DAOInterface<Inventory>{
     @Override
@@ -123,5 +120,47 @@ public class InventoryDAO implements DAOInterface<Inventory>{
             e.printStackTrace();
         }
         return ketqua;
+    }
+    public int getQuantityByProductId(String productId) {
+        int quantity = 0;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = JDBCUtil.getConnection(); // Assuming JDBCUtil is a utility class for database connection
+            String sql = "SELECT quantity FROM inventory WHERE product_id = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, productId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                quantity = rs.getInt("quantity");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle exception (logging or throwing as needed)
+        } finally {
+            JDBCUtil.closeConnection(conn);
+        }
+
+        return quantity;
+    }
+    public void updateQuantity(String productId, int newQuantity) {
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "UPDATE inventory SET quantity = ? WHERE product_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, newQuantity);
+            pstmt.setString(2, productId);
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Số lượng tồn kho đã được cập nhật.");
+            } else {
+                System.out.println("Không có sản phẩm trong kho để cập nhật.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

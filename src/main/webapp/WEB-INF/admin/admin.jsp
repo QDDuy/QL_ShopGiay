@@ -1,4 +1,7 @@
 <%@ page import="com.quach.shop_giay.database.OrderDAO" %>
+<%@ page import="com.quach.shop_giay.database.UserDAO" %>
+<%@ page import="com.quach.shop_giay.database.ProductDAO" %>
+<%@ page import="com.quach.shop_giay.model.Account" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,15 +49,21 @@
 <body>
 <div class="wrapper">
     <jsp:include page="../../layouts/sidebar.jsp"></jsp:include>
+<% Account account= (Account) session.getAttribute("checkLogin");
 
+    OrderDAO orderDAO=new OrderDAO();
+    UserDAO userDAO=new UserDAO();
+
+    ProductDAO productDAO=new ProductDAO();
+%>
     <div class="main-panel">
         <div class="main-header">
             <div class="main-header-logo">
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
-                    <a href="index.html" class="logo">
+                    <a href="admin" class="logo">
                         <img
-                                src="assets/img/kaiadmin/logo_light.svg"
+                                src=""
                                 alt="navbar brand"
                                 class="navbar-brand"
                                 height="20"
@@ -94,8 +103,8 @@
                                     </div>
                                     <div class="col col-stats ms-3 ms-sm-0">
                                         <div class="numbers">
-                                            <p class="card-category">Visitors</p>
-                                            <h4 class="card-title">1,294</h4>
+                                            <p class="card-category">Products</p>
+                                            <h4 class="card-title"><%=productDAO.getTotalProductCount()%></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -115,8 +124,8 @@
                                     </div>
                                     <div class="col col-stats ms-3 ms-sm-0">
                                         <div class="numbers">
-                                            <p class="card-category">Subscribers</p>
-                                            <h4 class="card-title">1303</h4>
+                                            <p class="card-category">User</p>
+                                            <h4 class="card-title"><%=userDAO.getTotalUsers()%></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -134,10 +143,11 @@
                                             <i class="fas fa-luggage-cart"></i>
                                         </div>
                                     </div>
+
                                     <div class="col col-stats ms-3 ms-sm-0">
                                         <div class="numbers">
                                             <p class="card-category">Sales</p>
-                                            <h4 class="card-title">$ 1,345</h4>
+                                            <h4 class="card-title">$ <%=orderDAO.getTotalRevenue()%></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -155,9 +165,7 @@
                                             <i class="far fa-check-circle"></i>
                                         </div>
                                     </div>
-                                    <%OrderDAO orderDAO=new OrderDAO();
 
-                                    %>
                                     <div class="col col-stats ms-3 ms-sm-0">
                                         <div class="numbers">
                                             <p class="card-category">Order</p>
