@@ -11,6 +11,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class OrderDetailDAO implements DAOInterface<OrderDetail> {
+
+    public OrderDetail getName_by_ID(OrderDetail orderDetail) {
+        return null;
+    }
+
     @Override
     public ArrayList<OrderDetail> getAll() {
         ArrayList<OrderDetail> ketqua = new ArrayList<>();

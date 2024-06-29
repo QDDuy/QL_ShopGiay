@@ -5,6 +5,16 @@
   Time: 10:00 SA
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page import="java.util.List" %>
+<%@ page import="com.quach.shop_giay.model.Order" %>
+<%@ page import="com.quach.shop_giay.model.Product" %>
+<%@ page import="com.quach.shop_giay.database.CategoryDAO" %>
+<%@ page import="com.quach.shop_giay.database.BrandDAO" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.quach.shop_giay.model.Category" %>
+<%@ page import="com.quach.shop_giay.model.Brand" %>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -435,37 +445,24 @@
       </nav>
       <!-- End Navbar -->
     </div>
-
     <div class="container">
+      <%List<Category> listCategories = (List<Category>) request.getAttribute("listCategories");
+        List<Brand> listBrands = (List<Brand>) request.getAttribute("listBrands");
+      %>
       <div class="page-inner">
-        <div class="page-header">
-          <h3 class="fw-bold mb-3">DataTables.Net</h3>
-          <ul class="breadcrumbs mb-3">
-            <li class="nav-home">
-              <a href="#">
-                <i class="icon-home"></i>
-              </a>
-            </li>
-            <li class="separator">
-              <i class="icon-arrow-right"></i>
-            </li>
-            <li class="nav-item">
-              <a href="#">Tables</a>
-            </li>
-            <li class="separator">
-              <i class="icon-arrow-right"></i>
-            </li>
-            <li class="nav-item">
-              <a href="#">Datatables</a>
-            </li>
-          </ul>
-        </div>
+        <%--                <%--%>
+        <%--                    String message = request.getAttribute("successMessage").toString();--%>
+        <%--                    if (!message.isEmpty()) {--%>
+        <%--                %>--%>
+        <%--                <p><%=message%></p>--%>
+        <%--                <%}%>--%>
         <div class="row">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
                 <div class="d-flex align-items-center">
-                  <h4 class="card-title">Add Row</h4>
+                  <h4 class="card-title">Danh sách Sản phẩm</h4>
+
                   <button
                           class="btn btn-primary btn-round ms-auto"
                           data-bs-toggle="modal"
@@ -483,8 +480,7 @@
                         id="addRowModal"
                         tabindex="-1"
                         role="dialog"
-                        aria-hidden="true"
-                >
+                        aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header border-0">
@@ -492,379 +488,248 @@
                           <span class="fw-mediumbold"> New</span>
                           <span class="fw-light"> Row </span>
                         </h5>
-                        <button
-                                type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
+
                       </div>
-                      <div class="modal-body">
-                        <p class="small">
-                          Create a new row using this form, make sure you
-                          fill them all
-                        </p>
-                        <form>
+                      <form method="post" action="admin">
+                        <input type="hidden" name="action" value="product_create"/>
+
+                        <div class="modal-body">
+                          <p class="small">
+                            Create a new row using this form, make sure you fill them all
+                          </p>
+
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group form-group-default">
-                                <label>Name</label>
-                                <input
-                                        id="addName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill name"
-                                />
+                                <label>Product Name</label>
+                                <input type="text" class="form-control" name="product_name" value="" />
                               </div>
-                            </div>
-                            <div class="col-md-6 pe-0">
                               <div class="form-group form-group-default">
-                                <label>Position</label>
-                                <input
-                                        id="addPosition"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill position"
-                                />
+                                <label>Description</label>
+                                <input type="text" class="form-control" name="description" value="" />
                               </div>
-                            </div>
-                            <div class="col-md-6">
                               <div class="form-group form-group-default">
-                                <label>Office</label>
-                                <input
-                                        id="addOffice"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="fill office"
-                                />
+                                <label>Price</label>
+                                <input type="text" class="form-control" name="price" value="" />
+                              </div>
+                              <div class="form-group form-group-default">
+                                <label>Category Name</label>
+                                <select name="id_category">
+                                  <%
+                                    for (Category category : listCategories) {
+                                  %>
+                                  <option value="<%= category.getCategoryId() %>"> <%= category.getCategoryName() %></option>
+                                  <% } %>
+                                </select>
+                              </div>
+                              <div class="form-group form-group-default">
+                                <label>Brand Name</label>
+                                <select name="id_brand">
+                                  <%
+                                    for (Brand brand : listBrands) {
+                                  %>
+                                  <option value="<%= brand.getBrandId() %>"> <%= brand.getBrandName() %></option>
+                                  <% } %>
+                                </select>
+
+                              </div>
+                              <div class="form-group form-group-default">
+                                <label>Image</label>
+                                <input type="text" class="form-control" name="image" value="" />
+                              </div>
+                              <div class="form-group form-group-default">
+                                <label>Color</label>
+                                <input type="text" class="form-control" name="color" value="" />
+                              </div>
+                              <div class="form-group form-group-default">
+                                <label>Size</label>
+                                <input type="text" class="form-control" name="size" value="" />
                               </div>
                             </div>
                           </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer border-0">
-                        <button
-                                type="button"
-                                id="addRowButton"
-                                class="btn btn-primary"
-                        >
-                          Add
-                        </button>
-                        <button
-                                type="button"
-                                class="btn btn-danger"
-                                data-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                      </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                          <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                      </form>
+
                     </div>
                   </div>
                 </div>
 
                 <div class="table-responsive">
-                  <table
-                          id="add-row"
-                          class="display table table-striped table-hover"
-                  >
+
+                  <table id="add-row" class="display table table-striped table-hover">
                     <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th style="width: 10%">Action</th>
+                      <th>Product Id</th>
+                      <th>Product Name</th>
+                      <th>Descripsion</th>
+                      <th>Price</th>
+                      <th>Category</th>
+                      <th>Brand</th>
+                      <th>Image</th>
+                      <th>Color</th>
+                      <th>Size</th>
+
+
+                      <th>Action</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
+                      <th>Product Id</th>
+                      <th>Product Name</th>
+                      <th>Descripsion</th>
+                      <th>Price</th>
+                      <th>Category</th>
+                      <th>Brand</th>
+                      <th>Image</th>
+                      <th>Color</th>
+                      <th>Size</th>
+
                       <th>Action</th>
                     </tr>
                     </tfoot>
                     <tbody>
+                    <% List<Product> listProduct = (List<Product>) request.getAttribute("listProduct");
+
+
+
+                    %>
+
+                    <% if (listProduct != null && !listProduct.isEmpty()) { %>
+                    <% for (Product product : listProduct) { %>
                     <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
+                      <td><%= product.getProductId() %>
+                      </td>
+                      <td><%= product.getProductName() %>
+                      </td>
+                      <td><%= product.getDesciption() %>
+                      </td>
+                      <td><%= product.getPrice() %>
+                      </td>
+                      <td><%= product.getStringCategoryId() %>
+                      </td>
+                      <td><%= product.getStringBrandId() %>
+                      </td>
+                      <td><img src="<%= product.getImage() %>" alt="Product Image" width="100" height="80">
+                      </td>
+                      <td><%= product.getColor() %>
+                      </td>
+                      <td><%= product.getSize() %>
+                      </td>
+
                       <td>
                         <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
+                          <form action="${pageContext.request.contextPath}/admin" method="get" style="display:inline;">
+                            <input type="hidden" name="url" value="deleteProduct" />
+                            <input type="hidden" name="productId" value="<%= product.getProductId() %>" />
+                            <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Xóa">
+                              <i class="fa fa-times"></i>
+                            </button>
+                          </form>
+                          <button type="button" title="Edit Task" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editOrder<%= product.getProductId() %>">
                             <i class="fa fa-edit"></i>
                           </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
+
+                          <div class="modal fade" id="editOrder<%= product.getProductId() %>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header border-0">
+                                  <h5 class="modal-title">
+                                    <span class="fw-mediumbold">Edit</span>
+                                    <span class="fw-light">Product</span>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form method="post" action="admin">
+                                  <input type="hidden" name="action" value="editProduct" />
+                                  <input type="hidden" name="product_id" value="<%= product.getProductId() %>" />
+                                  <div class="modal-body">
+                                    <p class="small">Edit the details of the Product</p>
+                                    <div class="row">
+                                      <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                          <label>Product Name</label>
+                                          <input type="text" class="form-control" name="product_name" value="<%= product.getProductName() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Description</label>
+                                          <input type="text" class="form-control" name="description" value="<%= product.getDesciption() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Price</label>
+                                          <input type="text" class="form-control" name="price" value="<%= product.getPrice() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Category Name</label>
+                                          <select name="id_category">
+                                            <%
+                                              for (Category category : listCategories) {
+                                            %>
+                                            <option value="<%= category.getCategoryId() %>"> <%= category.getCategoryName() %></option>
+                                            <% } %>
+                                          </select>
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Brand Name</label>
+                                          <select name="id_brand">
+                                            <%
+                                              for (Brand brand : listBrands) {
+                                            %>
+                                            <option value="<%= brand.getBrandId() %>"> <%= brand.getBrandName() %></option>
+                                            <% } %>
+                                          </select>
+                                          </select>
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Image</label>
+                                          <input type="text" class="form-control" name="image" value="<%= product.getImage() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Size</label>
+                                          <input type="text" class="form-control" name="color" value="<%= product.getColor() %>" />
+                                        </div>
+                                        <div class="form-group form-group-default">
+                                          <label>Size</label>
+                                          <input type="text" class="form-control" name="size" value="<%= product.getSize() %>" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer border-0">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>
+                    <% } %>
+                    <% } else { %>
                     <tr>
-                      <td>Garrett Winters</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
+                      <td colspan="10">Không có danh mục nào.</td>
                     </tr>
-                    <tr>
-                      <td>Ashton Cox</td>
-                      <td>Junior Technical Author</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Cedric Kelly</td>
-                      <td>Senior Javascript Developer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Airi Satou</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Brielle Williamson</td>
-                      <td>Integration Specialist</td>
-                      <td>New York</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Herrod Chandler</td>
-                      <td>Sales Assistant</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Rhona Davidson</td>
-                      <td>Integration Specialist</td>
-                      <td>Tokyo</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Colleen Hurst</td>
-                      <td>Javascript Developer</td>
-                      <td>San Francisco</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Sonya Frost</td>
-                      <td>Software Engineer</td>
-                      <td>Edinburgh</td>
-                      <td>
-                        <div class="form-button-action">
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-primary btn-lg"
-                                  data-original-title="Edit Task"
-                          >
-                            <i class="fa fa-edit"></i>
-                          </button>
-                          <button
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title=""
-                                  class="btn btn-link btn-danger"
-                                  data-original-title="Remove"
-                          >
-                            <i class="fa fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <% } %>
+
+
                     </tbody>
                   </table>
                 </div>
+
+
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
 
     <footer class="footer">
       <div class="container-fluid d-flex justify-content-between">

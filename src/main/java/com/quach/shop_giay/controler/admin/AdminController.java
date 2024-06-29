@@ -31,7 +31,7 @@ public class AdminController extends HttpServlet {
 
         String url = req.getParameter("url");
         if ("product".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/product.jsp").forward(req, resp);
+            showProduct(req, resp);
         } else if ("kho".equals(url)) {
             req.getRequestDispatcher("/WEB-INF/admin/kho.jsp").forward(req, resp);
         } else if ("tonkho".equals(url)) {
@@ -80,7 +80,12 @@ public class AdminController extends HttpServlet {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderDetailId(orderDetailId);
             deleteOrderDetail(req, resp, orderDetail);
-        } else {
+        } else if ("deleteProduct".equals(url)) {
+            String orderDetailId = req.getParameter("productId");
+            Product product = new Product();
+            product.setProductId(orderDetailId);
+            deleteProduct(req, resp, product);
+        }else {
             req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
 
         }
@@ -113,9 +118,112 @@ public class AdminController extends HttpServlet {
         } else if ("orderDetailId".equals(action)) {
             updateOrderDetail(req, resp);
 
+        } else if ("editProduct".equals(action)) {
+            editProduct(req, resp);
+        } else if ("product_create".equals(action)) {}
+            createProduct(req, resp);
+    }
+    // --------------------------------------hiển thị product-----------------------------------------------------------
+    private void showProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ProductDAO productDAO = new ProductDAO();
+        List<Product> listProducts = productDAO.getAll();
+        System.out.println(listProducts);
+        req.setAttribute("listProduct", listProducts);
+
+        // Lấy danh sách Category và gửi cho JSP
+        CategoryDAO categoryDAO = new CategoryDAO();
+        List<Category> listCategories = categoryDAO.getAll(); // Lấy danh sách tất cả
+        req.setAttribute("listCategories", listCategories);
+
+        BrandDAO brandDAO = new BrandDAO();
+        List<Brand> listBrands = brandDAO.getAll(); // Lấy danh sách tất cả
+        req.setAttribute("listBrands", listBrands);
+        req.getRequestDispatcher("/WEB-INF/admin/product.jsp").forward(req, resp);
+    }
+
+
+    private void editProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Lấy các thông tin từ form
+        String productId = req.getParameter("product_id");
+        String productName = req.getParameter("product_name");
+        String description = req.getParameter("description");
+        Double price = Double.parseDouble(req.getParameter("price"));
+        String categoryId = req.getParameter("id_category");
+        String brandId = req.getParameter("id_brand");
+        String image = req.getParameter("image");
+        String color = req.getParameter("color");
+        Double size = Double.parseDouble(req.getParameter("size"));
+
+
+
+
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Category category = new Category();
+        BrandDAO  brandDAO = new BrandDAO();
+        Brand brand = new Brand();
+
+        category.setCategoryId(categoryId);
+
+
+        brand.setBrandId(brandId);
+
+
+        Product product = new Product(productId, productName, description, price, category, brand, image, color, size);
+
+        ProductDAO productDAO = new ProductDAO();
+        productDAO.update(product);
+
+        // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
+        resp.sendRedirect(req.getContextPath() + "/admin?url=product");
+    }
+    private void createProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+
+
+            Random rs = new Random();
+            String productId = "TK" + System.currentTimeMillis() + rs.nextInt(10);
+            String productName = req.getParameter("product_name");
+            String description = req.getParameter("description");
+            Double price = Double.parseDouble(req.getParameter("price"));
+            String categoryId = req.getParameter("id_category");
+            String brandId = req.getParameter("id_brand");
+            String image = req.getParameter("image");
+            String color = req.getParameter("color");
+            Double size = Double.parseDouble(req.getParameter("size"));
+
+
+            Category category = new Category();
+            Brand brand = new Brand();
+
+            category.setCategoryId(categoryId);
+            brand.setBrandId(brandId);
+
+            Product product = new Product(productId, productName, description, price, category, brand, image, color, size);
+
+            ProductDAO productDAO = new ProductDAO();
+            int a = productDAO.insert(product);
+            if(a>0){
+                req.getSession().setAttribute("successMessage", "Đã thêm sản phẩm thành công!");
+            }
+            System.out.println(product);
+        }catch (Exception e) {
+            req.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi khi thêm đơn hàng. Vui lòng thử lại sau.");
+            e.printStackTrace();
+        } finally {
+            resp.sendRedirect(req.getContextPath() + "/admin?url=product");
         }
 
     }
+
+    private void deleteProduct(HttpServletRequest req, HttpServletResponse resp, Product product) throws ServletException, IOException {
+        ProductDAO productDAO = new ProductDAO();
+        productDAO.delete(product);
+        resp.sendRedirect(req.getContextPath() + "/admin?url=product");
+    }
+    // ---------------------------------------end product --------------------------------------------------------------
+
+
+
 
     //  start  Đơn hàng
     private void showListOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

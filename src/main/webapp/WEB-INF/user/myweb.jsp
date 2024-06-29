@@ -121,7 +121,7 @@
         <div class="row featured__filter">
             <% if (listP != null) {
                 for (Product product : listP) {%>
-            <div class="col-lg-3 col-md-4 col-sm-6 mix  <%=product.getCategoryId().getCategoryId()%>">
+            <div class="col-lg-3 col-md-4 col-sm-6 mix  <%=product.getCategoryId()%>">
                 <div class="featured__item">
                     <div class="featured__item__pic set-bg" data-setbg="../../img/products/<%=product.getImage()%>">
 <%--                        <img src="../../img/products/<%=product.getImage()%>" alt="">--%>

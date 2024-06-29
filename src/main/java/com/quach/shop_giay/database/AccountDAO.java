@@ -137,7 +137,6 @@ public class AccountDAO  implements DAOInterface<Account>{
     public int deleteAll(ArrayList<Account> arr) {
         return 0;
     }
-
     @Override
     public int update(Account account) {
         int ketqua = 0; // Khởi tạo kết quả mặc định là 0 (thất bại)

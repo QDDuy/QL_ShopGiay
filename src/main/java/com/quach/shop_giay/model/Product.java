@@ -40,6 +40,7 @@ public class Product {
         return productName;
     }
 
+
     public void setProductName(String productName) {
         this.productName = productName;
     }
@@ -64,12 +65,20 @@ public class Product {
         return categoryId;
     }
 
+    public String getStringCategoryId(){
+        return categoryId.getCategoryId();
+    }
+
     public void setCategoryId(Category categoryId) {
         this.categoryId = categoryId;
     }
 
     public Brand getBrandId() {
         return brandId;
+    }
+
+    public String getStringBrandId(){
+        return brandId.getBrandId();
     }
 
     public void setBrandId(Brand brandId) {

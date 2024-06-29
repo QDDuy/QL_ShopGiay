@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BrandDAO implements DAOInterface<Brand> {
     @Override
@@ -125,4 +127,25 @@ public class BrandDAO implements DAOInterface<Brand> {
         }
         return ketqua;
     }
+
+    public Map<String, String> ddd() {
+        Map<String, String> ketqua = new HashMap<>();
+        try (Connection conn = JDBCUtil.getConnection(); // Sử dụng try-with-resources để tự động đóng kết nối
+             PreparedStatement st = conn.prepareStatement("SELECT brand_id, brand_name FROM brands");
+             ResultSet rs = st.executeQuery()) {
+
+            while (rs.next()) {
+                String brandId = rs.getString("brand_id");
+                String brandName = rs.getString("brand_name");
+
+                // Thêm trực tiếp vào HashMap
+                ketqua.put(brandId, brandName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Xử lý lỗi phù hợp (ví dụ: ném một ngoại lệ tùy chỉnh hoặc trả về một HashMap rỗng)
+        }
+        return ketqua;
+    }
+
 }
