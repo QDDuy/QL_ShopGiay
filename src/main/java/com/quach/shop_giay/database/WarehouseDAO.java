@@ -40,7 +40,20 @@ public class WarehouseDAO implements DAOInterface<Warehouse>{
     }
     @Override
     public int insert(Warehouse warehouse){
-        return 0;
+        int ketqua = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "INSERT INTO warehouse (id_kho, name_kho, address_kho) VALUES (?, ?, ?)";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, warehouse.getWarehouse_id());
+            st.setString(2, warehouse.getWarehouse_name());
+            st.setString(3, warehouse.getWarehouse_address());
+            ketqua = st.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ketqua;
     }
     @Override
     public int insertAll(ArrayList<Warehouse> arr){
@@ -48,7 +61,18 @@ public class WarehouseDAO implements DAOInterface<Warehouse>{
     }
     @Override
     public int delete(Warehouse warehouse){
-        return 0;
+        int ketqua = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "DELETE FROM warehouse WHERE id_kho=?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, warehouse.getWarehouse_id());
+            ketqua = st.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ketqua;
     }
     @Override
     public int deleteAll(ArrayList<Warehouse> arr){
@@ -56,6 +80,19 @@ public class WarehouseDAO implements DAOInterface<Warehouse>{
     }
     @Override
     public int update(Warehouse warehouse){
-        return 0;
+        int ketqua = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "UPDATE warehouse SET name_kho=?, address_kho=? WHERE id_kho=?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, warehouse.getWarehouse_name());
+            st.setString(2, warehouse.getWarehouse_address());
+            st.setString(3, warehouse.getWarehouse_id());
+            ketqua = st.executeUpdate();
+            JDBCUtil.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ketqua;
     }
 }

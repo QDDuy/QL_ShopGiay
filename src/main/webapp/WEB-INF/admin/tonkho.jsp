@@ -180,11 +180,11 @@
                               </div>
                               <div class="form-group form-group-default">
                                 <label>Quantity</label>
-                                <input type="number" class="form-control" name="quantity" value="" />
+                                <input type="number" class="form-control" name="quantity" value="" required/>
                               </div>
 
                               <div class="form-group form-group-default">
-                                <label>Import_at</label>
+                                
                                 <input type="hidden" id="currentDate1" name="import_at">
                                 <script>
                                   const currentDateInput = document.getElementById("currentDate1");
@@ -304,12 +304,12 @@
                                         </div>
                                         <div class="form-group form-group-default">
                                           <label>Quantity</label>
-                                          <input type="number" class="form-control" name="quantity" value="<%= inventory.getQuantity() %>" />
+                                          <input type="number" class="form-control" name="quantity" value="<%= inventory.getQuantity() %>" required />
                                         </div>
 
                                         <div class="form-group form-group-default">
-                                          <label>Import_at</label>
-                                          <input type="date" id="currentDate" name="import_at">
+
+                                          <input type="date" id="currentDate" name="import_at" required>
                                           <script>
                                             const currentDateInput = document.getElementById("currentDate");
                                             const today = new Date().toISOString().split("T")[0]; // Lấy ngày ở định dạng YYYY-MM-DD
