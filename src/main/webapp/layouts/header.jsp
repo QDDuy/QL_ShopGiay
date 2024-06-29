@@ -1,10 +1,7 @@
-<%@page import="com.quach.shop_giay.model.User" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.quach.shop_giay.model.Product" %>
-<%@ page import="com.quach.shop_giay.model.Brand" %>
 <%@ page import="java.text.BreakIterator" %>
 <%@ page import="java.util.Objects" %>
-<%@ page import="com.quach.shop_giay.model.Account" %>
+<%@ page import="com.quach.shop_giay.model.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -14,21 +11,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookStore</title>
     <!-- Font Awesome -->
-    <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-            rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
     <!-- Google Fonts -->
-    <link
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-            rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <!-- MDB -->
-    <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css"
-            rel="stylesheet"
-    />
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet"/>
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
     <!-- Css Styles -->
@@ -40,38 +27,27 @@
     <link rel="stylesheet" href="../css/user/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="../css/user/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="../css/user/style.css" type="text/css">
-
-
 </head>
 
 <body>
+<%
+    List<Brand> listB = (List<Brand>) session.getAttribute("listB");
+    Account account = (Account) session.getAttribute("checkLogin");
+    List<ShoppingCart> shoppingCarts = (List<ShoppingCart>) session.getAttribute("shoppingCarts");
+    int totalQuantity = 0;
+    if (shoppingCarts != null) {
+        for (ShoppingCart cart : shoppingCarts) {
+            totalQuantity += cart.getQuantity();
+        }
+    }
+%>
 
-    <%
-                List<Brand> listB = (List<Brand>) session.getAttribute("listB");
-                Object obj = session.getAttribute("checkLogin");
-                Account account= null;
-
-                if (obj != null && obj instanceof Account) {
-                    account = (Account) obj;
-                }
-int total = 0;
-Object totalObj = session.getAttribute("total");
-if (totalObj instanceof Integer) {
-    total = (int) totalObj;
-} else {
-    // Xử lý trường hợp không phải là số nguyên
-    // Ví dụ: set total thành 0
-    total = 0;
-}
-
-                %>
-
-<!-- Page Preloder -->
+<!-- Page Preloader -->
 <div id="preloder">
     <div class="loader"></div>
 </div>
 
-<!-- Humberger Begin -->
+<!-- Humberger Menu Begin -->
 <div class="humberger__menu__overlay"></div>
 <div class="humberger__menu__wrapper">
     <div class="humberger__menu__logo">
@@ -80,16 +56,14 @@ if (totalObj instanceof Integer) {
     <div class="humberger__menu__cart">
         <ul>
             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-            <li><a href="shoppingcart"><i class="fa fa-shopping-bag"></i> <span><%=total%></span></a></li>
+            <li><a href="shoppingcart"><i class="fa fa-shopping-bag"></i> <span><%= totalQuantity %></span></a></li>
         </ul>
         <div class="header__cart__price">item: <span>$150.00</span></div>
     </div>
     <div class="humberger__menu__widget">
-
         <div class="header__top__right__auth">
             <%
-                if (account != null&& account.getRole().equals("user")) {
-                    System.out.println("accout"+account.getRole());
+                if (account != null && account.getRole().equals("user")) {
             %>
             <li class="nav-item dropdown">
                 <a data-mdb-dropdown-init class="nav-link dropdown-toggle d-flex align-items-center" href="#"
@@ -99,22 +73,12 @@ if (totalObj instanceof Integer) {
                          loading="lazy"/>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li>
-                        <a class="dropdown-item" href="changeInforUser">My profile</a>
-                        <a class="dropdown-item" href="changeInforUser">My profile</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="changeAvatar">Change Avatar</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Settings</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="user?act=logout">Logout</a>
-                    </li>
+                    <li><a class="dropdown-item" href="changeInforUser">My profile</a></li>
+                    <li><a class="dropdown-item" href="changeAvatar">Change Avatar</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="user?act=logout">Logout</a></li>
                 </ul>
             </li>
-
             <%
             } else {
             %>
@@ -122,12 +86,11 @@ if (totalObj instanceof Integer) {
             <%
                 }
             %>
-
         </div>
     </div>
     <nav class="humberger__menu__nav mobile-menu">
         <ul>
-            <li class="active"><a href="">Home</a></li>
+            <li class="active"><a href="home">Home</a></li>
             <li><a href="shop">Shop</a></li>
             <li><a href="#">Pages</a>
                 <ul class="header__menu__dropdown">
@@ -155,7 +118,9 @@ if (totalObj instanceof Integer) {
         </ul>
     </div>
 </div>
-<!-- Humberger End -->
+<!-- Humberger Menu End -->
+
+<!-- Header Begin -->
 <header class="header">
     <div class="header__top">
         <div class="container">
@@ -176,7 +141,6 @@ if (totalObj instanceof Integer) {
                             <a href="#"><i class="fa fa-linkedin"></i></a>
                             <a href="#"><i class="fa fa-pinterest-p"></i></a>
                         </div>
-
                         <div class="header__top__right__auth">
                             <%
                                 if (account != null && account.getRole().equals("user")) {
@@ -188,18 +152,10 @@ if (totalObj instanceof Integer) {
                                          class="rounded-circle" height="22" alt="Portrait of a Woman" loading="lazy"/>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <li>
-                                        <a class="dropdown-item" href="changeInforUser">My profile</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="changeAvatar">Change Avatar</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">Settings</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="user?act=logout">Logout</a>
-                                    </li>
+                                    <li><a class="dropdown-item" href="changeInforUser">My profile</a></li>
+                                    <li><a class="dropdown-item" href="changeAvatar">Change Avatar</a></li>
+                                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                                    <li><a class="dropdown-item" href="user?act=logout">Logout</a></li>
                                 </ul>
                             </li>
                             <%
@@ -209,7 +165,6 @@ if (totalObj instanceof Integer) {
                             <%
                                 }
                             %>
-
                         </div>
                     </div>
                 </div>
@@ -235,7 +190,7 @@ if (totalObj instanceof Integer) {
             <div class="col-lg-3">
                 <div class="header__cart">
                     <ul>
-                        <li><a href="shoppingcart"><i class="fa fa-shopping-bag"></i> <span><%=total%></span></a></li>
+                        <li><a href="shoppingcart"><i class="fa fa-shopping-bag"></i> <span><%= totalQuantity %></span></a></li>
                     </ul>
                     <div class="header__cart__price">item: <span>$150.00</span></div>
                 </div>
@@ -246,3 +201,18 @@ if (totalObj instanceof Integer) {
         </div>
     </div>
 </header>
+<!-- Header End -->
+
+<!-- Add the rest of your HTML content here -->
+
+<!-- Scripts -->
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.nice-select.min.js"></script>
+<script src="../js/jquery-ui.min.js"></script>
+<script src="../js/jquery.slicknav.js"></script>
+<script src="../js/mixitup.min.js"></script>
+<script src="../js/owl.carousel.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>

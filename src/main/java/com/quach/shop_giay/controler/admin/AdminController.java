@@ -24,75 +24,72 @@ public class AdminController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false); // Retrieve existing session without creating a new one
         if (session == null || session.getAttribute("checkLogin") == null) {
-            // If session or account attribute doesn't exist, redirect to login or show an error
-            resp.sendRedirect(req.getContextPath() + "/login"); // Adjust your login page URL as needed
-            return;
-        }
-
-        String url = req.getParameter("url");
-        if ("product".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/product.jsp").forward(req, resp);
-        } else if ("kho".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/kho.jsp").forward(req, resp);
-        } else if ("tonkho".equals(url)) {
-            req.getRequestDispatcher("/WEB-INF/admin/tonkho.jsp").forward(req, resp);
-        } else if ("donhang".equals(url)) {
-            showListOrder(req, resp);
-        } else if ("chitietdonhang".equals(url)) {
-            showChitietDonHang(req, resp);
-        } else if ("nhanvien".equals(url)) {
-            showEmployee(req, resp);
-        } else if ("khachhang".equals(url)) {
-            showUser(req, resp);
-        } else if ("taikhoan".equals(url)) {
-            showTaikhoan(req, resp);
-        } else if ("danhmuc".equals(url)) {
-
-            showDanhmuc(req, resp);
-            return;
-
-        } else if ("brand".equals(url)) {
-            showBrand(req, resp);
-            return;
-        } else if ("deleteOrder".equals(url)) {
-            String orderId = req.getParameter("orderId");
-            Order order = new Order();
-            order.setOrderId(orderId);
-            deleteOrder(req, resp, order);
-            return;
-        } else if ("deleteCategory".equals(url)) {
-            String categoryId = req.getParameter("categoryId");
-            Category category = new Category();
-            category.setCategoryId(categoryId);
-            deleteCategory(req, resp, category);
-            return;
-        } else if ("deleteEmployee".equals(url)) {
-            String employeeId = req.getParameter("id_employe");
-            Employees employee = new Employees();
-            employee.setIdEmploye(employeeId);
-            deleteEmployee(req, resp, employee);
-        } else if ("deleteAccount".equals(url)) {
-            String accountId = req.getParameter("accountId");
-            Account account = new Account();
-            account.setAccountId(accountId);
-            deleteAccount(req, resp, account);
-
-        } else if ("deleteOrderDetail".equals(url)) {
-            String orderDetailId = req.getParameter("orderDetailId");
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrderDetailId(orderDetailId);
-            deleteOrderDetail(req, resp, orderDetail);
-        } else if ("deleteBrand".equals(url)) {
-            String brandId = req.getParameter("brandId");
-            Brand brand = new Brand();
-            brand.setBrandId(brandId);
-            deleteBrand(req, resp, brand);
+            resp.sendRedirect(req.getContextPath() + "/login");
             return;
         } else {
-            req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
-
+            Account account = (Account) session.getAttribute("checkLogin");
+            if (account.getRole().equals("user")) {
+                resp.sendRedirect(req.getContextPath() + "/login");
+                return;
+            } else {
+                String url = req.getParameter("url");
+                if ("product".equals(url)) {
+                    req.getRequestDispatcher("/WEB-INF/admin/product.jsp").forward(req, resp);
+                } else if ("kho".equals(url)) {
+                    req.getRequestDispatcher("/WEB-INF/admin/kho.jsp").forward(req, resp);
+                } else if ("tonkho".equals(url)) {
+                    req.getRequestDispatcher("/WEB-INF/admin/tonkho.jsp").forward(req, resp);
+                } else if ("donhang".equals(url)) {
+                    showListOrder(req, resp);
+                } else if ("chitietdonhang".equals(url)) {
+                    showChitietDonHang(req, resp);
+                } else if ("nhanvien".equals(url)) {
+                    showEmployee(req, resp);
+                } else if ("khachhang".equals(url)) {
+                    showUser(req, resp);
+                } else if ("taikhoan".equals(url)) {
+                    showTaikhoan(req, resp);
+                } else if ("danhmuc".equals(url)) {
+                    showDanhmuc(req, resp);
+                } else if ("brand".equals(url)) {
+                    showBrand(req, resp);
+                } else if ("deleteOrder".equals(url)) {
+                    String orderId = req.getParameter("orderId");
+                    Order order = new Order();
+                    order.setOrderId(orderId);
+                    deleteOrder(req, resp, order);
+                } else if ("deleteCategory".equals(url)) {
+                    String categoryId = req.getParameter("categoryId");
+                    Category category = new Category();
+                    category.setCategoryId(categoryId);
+                    deleteCategory(req, resp, category);
+                } else if ("deleteEmployee".equals(url)) {
+                    String employeeId = req.getParameter("id_employe");
+                    Employees employee = new Employees();
+                    employee.setIdEmploye(employeeId);
+                    deleteEmployee(req, resp, employee);
+                } else if ("deleteAccount".equals(url)) {
+                    String accountId = req.getParameter("accountId");
+                    Account account1 = new Account();
+                    account1.setAccountId(accountId);
+                    deleteAccount(req, resp, account1);
+                } else if ("deleteOrderDetail".equals(url)) {
+                    String orderDetailId = req.getParameter("orderDetailId");
+                    OrderDetail orderDetail = new OrderDetail();
+                    orderDetail.setOrderDetailId(orderDetailId);
+                    deleteOrderDetail(req, resp, orderDetail);
+                } else if ("deleteBrand".equals(url)) {
+                    String brandId = req.getParameter("brandId");
+                    Brand brand = new Brand();
+                    brand.setBrandId(brandId);
+                    deleteBrand(req, resp, brand);
+                } else {
+                    req.getRequestDispatcher("/WEB-INF/admin/admin.jsp").forward(req, resp);
+                }
+            }
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -121,10 +118,10 @@ public class AdminController extends HttpServlet {
         } else if ("orderDetailId".equals(action)) {
             updateOrderDetail(req, resp);
 
-        }else if ("createBrand".equals(action)) {
+        } else if ("createBrand".equals(action)) {
             createBrand(req, resp);
 
-        }else if ("editBrand".equals(action)) {
+        } else if ("editBrand".equals(action)) {
             editBrand(req, resp);
 
         }
@@ -136,7 +133,6 @@ public class AdminController extends HttpServlet {
     private void showListOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         OrderDAO orderDAO = new OrderDAO();
         List<Order> listOrders = orderDAO.getAll();
-        System.out.println(listOrders);
         req.setAttribute("listOrders", listOrders);
         req.getRequestDispatcher("/WEB-INF/admin/donhang.jsp").forward(req, resp);
     }
@@ -342,7 +338,6 @@ public class AdminController extends HttpServlet {
         Account account = new Account();
         ;
         List<Account> listacc = accountDAO.getAll();
-        System.out.println(listacc);
         req.setAttribute("listacc", listacc);
         req.getRequestDispatcher("/WEB-INF/admin/taikhoan.jsp").forward(req, resp);
     }
@@ -419,7 +414,6 @@ public class AdminController extends HttpServlet {
     private void showUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserDAO userDAO = new UserDAO();
         List<User> listUsers = userDAO.getAll();
-        System.out.println(listUsers);
         req.setAttribute("listUsers", listUsers);
         req.getRequestDispatcher("/WEB-INF/admin/khachhang.jsp").forward(req, resp);
     }
@@ -470,18 +464,18 @@ public class AdminController extends HttpServlet {
         EmployeesDAO employeesDAO = new EmployeesDAO();
         Employees employees = new Employees();
         List<Employees> listemp = employeesDAO.getAll();
-        System.out.println(listemp);
         req.setAttribute("listemp", listemp);
         req.getRequestDispatcher("/WEB-INF/admin/nhanvien.jsp").forward(req, resp);
     }
+
     private void showDanhmuc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CategoryDAO categoryDAO = new CategoryDAO();
         Category category = new Category();
         List<Category> listemp = categoryDAO.getAll();
-        System.out.println(listemp);
         req.setAttribute("listemp", listemp);
         req.getRequestDispatcher("/WEB-INF/admin/danhmuc.jsp").forward(req, resp);
     }
+
     private void category(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String categoryId;
 
@@ -489,19 +483,20 @@ public class AdminController extends HttpServlet {
         categoryId = "DM" + System.currentTimeMillis() + rd.nextInt(1000);
         String categoryName = req.getParameter("Tendanhmuc");
         CategoryDAO categoryDAO = new CategoryDAO();
-        Category category = new Category(categoryId,categoryName);
+        Category category = new Category(categoryId, categoryName);
         categoryDAO.insert(category);
         // Chuyển hướng người dùng về trang quản lý đơn hàng
         resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
     }
+
     private void deleteCategory(HttpServletRequest req, HttpServletResponse resp, Category category) throws ServletException, IOException {
         CategoryDAO categoryDAO = new CategoryDAO();
         categoryDAO.delete(category);
-        System.out.println(categoryDAO.delete(category));
         req.getSession().setAttribute("successMessage", "Đã xoá danh mục thành công!");
 
         resp.sendRedirect(req.getContextPath() + "/admin?url=danhmuc");
     }
+
     private void editCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Lấy các thông tin từ form
         String categoryId = req.getParameter("category_id");
@@ -559,15 +554,15 @@ public class AdminController extends HttpServlet {
         EmployeesDAO employeesDAO = new EmployeesDAO();
         employeesDAO.update(employees);
         resp.sendRedirect(req.getContextPath() + "/admin?url=nhanvien");
-        System.out.println(employeesDAO.update(employees));
     }
+
     private void showBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BrandDAO brandDAO = new BrandDAO();
         List<Brand> listbrand = brandDAO.getAll();
-        System.out.println(listbrand);
         req.setAttribute("listbrand", listbrand);
         req.getRequestDispatcher("/WEB-INF/admin/brand.jsp").forward(req, resp);
     }
+
     private void createBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Lấy các thông tin từ form
         Random rd = new Random();
@@ -585,6 +580,7 @@ public class AdminController extends HttpServlet {
         // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
         resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
     }
+
     private void editBrand(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Lấy các thông tin từ form
         String brandId = req.getParameter("brand_id");
@@ -601,11 +597,11 @@ public class AdminController extends HttpServlet {
         // Chuyển hướng đến trang quản lý thương hiệu (hoặc trang bạn muốn)
         resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
     }
+
     private void deleteBrand(HttpServletRequest req, HttpServletResponse resp, Brand brand) throws ServletException, IOException {
         BrandDAO brandDAO = new BrandDAO();
         brandDAO.delete(brand);
-        System.out.println(brandDAO.delete(brand));
-        req.getSession().setAttribute("successMessage","Da xoa thanh cong");
+        req.getSession().setAttribute("successMessage", "Da xoa thanh cong");
         resp.sendRedirect(req.getContextPath() + "/admin?url=brand");
     }
 

@@ -166,24 +166,29 @@ public class UserDAO implements DAOInterface<User> {
     @Override
     public int update(User user) {
         int ketqua = 0;
-        try {
-            Connection conn = JDBCUtil.getConnection();
-            String sql = "UPDATE users SET account_id=? ,email=?,fullname=?, address=?, phone=?,  WHERE user_id=?";
-            PreparedStatement st = conn.prepareStatement(sql);
-            st.setString(1,user.getAccount().getAccountId());
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement st = conn.prepareStatement(
+                     "UPDATE users SET id_taikhoan=?, email=?, fullname=?, address=?, phone=?, avatar=? WHERE user_id=?")) {
+
+            st.setString(1, user.getAccount().getAccountId());
             st.setString(2, user.getEmail());
             st.setString(3, user.getFullName());
             st.setString(4, user.getAddress());
             st.setString(5, user.getPhone());
-            st.setString(6, user.getUserId());
-            ketqua = st.executeUpdate();
-            JDBCUtil.closeConnection(conn);
+            st.setString(6, user.getAvatar());
+            st.setString(7, user.getUserId());
 
+            ketqua = st.executeUpdate();
+        } catch (SQLException e) {
+            // Handle SQL exceptions here, log or throw custom exception
+            e.printStackTrace();
         } catch (Exception e) {
+            // Handle other exceptions (if any)
             e.printStackTrace();
         }
         return ketqua;
     }
+
 
     public int updateAvatar(User user) {
         int ketqua = 0;

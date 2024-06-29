@@ -129,9 +129,5 @@ public class BrandDAO implements DAOInterface<Brand> {
         return ketqua;
     }
 
-    public static void main(String[] args) {
-        BrandDAO dao = new BrandDAO();
-        Brand brand = new Brand("bra1","àdsfs","àdfasf");
-        dao.insert(brand);
-    }
+
 }

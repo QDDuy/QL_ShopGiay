@@ -60,6 +60,30 @@ public class OrderDAO implements DAOInterface<Order> {
         return ketqua;
     }
 
+
+    public Order getOrderByUserId(String userId) {
+        Order order = null;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM orders WHERE user_id = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, userId);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                String orderId = rs.getString("order_id");
+                Date orderDate = rs.getDate("order_date");
+                double totalAmount = rs.getDouble("total_amount");
+                String orderStatus = rs.getString("order_status");
+                User user = new UserDAO().getId(new User(userId, new Account(), "", "", "", "", ""));
+                order = new Order(orderId, user, orderDate, totalAmount, orderStatus);
+            }
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order;
+    }
     public static void main(String[] args) {
         Order order=new Order();
         order.setOrderId("DH1719534386795339");
@@ -136,4 +160,5 @@ public class OrderDAO implements DAOInterface<Order> {
         }
         return ketqua;
     }
+
 }

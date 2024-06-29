@@ -119,4 +119,45 @@ public class OrderDetailDAO implements DAOInterface<OrderDetail> {
         }
         return ketqua;
     }
+
+    public OrderDetail getOrderDetailByOrderIdAndProductId(String orderId, String productId) {
+        OrderDetail orderDetail = null;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM orderdetails WHERE order_id = ? AND product_id = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, orderId);
+            st.setString(2, productId);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                String orderDetailId = rs.getString("order_detail_id");
+                int quantity = rs.getInt("quantity");
+                double price = rs.getDouble("unitprice");
+                Order order = new OrderDAO().getId(new Order(orderId, null, null, 0.0, ""));
+                Product product =new Product();
+                product.setProductId(productId);
+                orderDetail = new OrderDetail(orderDetailId, order, product, quantity, price);
+            }
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orderDetail;
+    }
+    public int updateOrderDetailQuantity(OrderDetail orderDetail) {
+        int result = 0;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "UPDATE orderdetails SET quantity = ? WHERE order_detail_id = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setInt(1, orderDetail.getQuantity());
+            st.setString(2, orderDetail.getOrderDetailId());
+            result = st.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

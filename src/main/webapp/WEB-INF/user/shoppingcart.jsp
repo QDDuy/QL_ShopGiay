@@ -1,18 +1,15 @@
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="com.quach.shop_giay.model.ShoppingCart" %><%--
-  Created by IntelliJ IDEA.
-  User: quach
-  Date: 27/04/2024
-  Time: 8:48 CH
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="com.quach.shop_giay.model.ShoppingCart" %>
+<%@ page import="com.quach.shop_giay.model.Account" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:include page="../../layouts/header.jsp"></jsp:include>
 
-<% ArrayList<ShoppingCart> shoppingcart = (ArrayList<ShoppingCart>) session.getAttribute("shoppingCarts");%>
-
+<%
+    List<ShoppingCart> shoppingcart = (List<ShoppingCart>) session.getAttribute("shoppingCarts");
+    System.out.println("list +" + shoppingcart);
+    Account account = (Account) session.getAttribute("checkLogin");
+%>
 
 <!-- Shoping Cart Section Begin -->
 <section class="shoping-cart spad">
@@ -32,35 +29,41 @@
                         </thead>
                         <tbody>
                         <%
-                            if (shoppingcart != null) {
-                                for (ShoppingCart shoppingCart : shoppingcart) {
-
+                            if (shoppingcart != null && !shoppingcart.isEmpty() && account != null) {
+                                for (ShoppingCart cartItem : shoppingcart) {
+                                    if (account.getAccountId().equals(cartItem.getuser().getUserId())) {
                         %>
                         <tr>
                             <td class="shoping__cart__item">
-                                <img src="../../img/products/<%=shoppingCart.getProductId().getImage()%>" alt="">
-                                <h5><%=shoppingCart.getProductId().getProductName()%>
-                                </h5>
+                                <img src="../../img/products/<%= cartItem.getProductId().getImage() %>" alt="">
+                                <h5><%= cartItem.getProductId().getProductName() %></h5>
                             </td>
                             <td class="shoping__cart__price">
-                                $<%=shoppingCart.getProductId().getPrice()%>
+                                $<%= cartItem.getProductId().getPrice() %>
                             </td>
                             <td class="shoping__cart__quantity">
                                 <div class="quantity">
                                     <div class="pro-qty">
-                                        <input type="text" value="<%=shoppingCart.getQuantity()%>">
+                                        <input type="text" value="<%= cartItem.getQuantity() %>">
                                     </div>
                                 </div>
                             </td>
                             <td class="shoping__cart__total">
-                                $<%=shoppingCart.getProductId().getPrice() * shoppingCart.getQuantity()%>
+                                $<%= cartItem.getProductId().getPrice() * cartItem.getQuantity() %>
                             </td>
                             <td class="shoping__cart__item__close">
-                                <span class="fas fa-times"></span>
+                                <a href="#" class="fas fa-times"></a>
                             </td>
                         </tr>
                         <%
                                 }
+                            }
+                        } else {
+                        %>
+                        <tr>
+                            <td colspan="5">Your shopping cart is empty.</td>
+                        </tr>
+                        <%
                             }
                         %>
                         </tbody>
@@ -71,9 +74,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="shoping__cart__btns">
-                    <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
+                    <a href="shop" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
                     <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
-                        Upadate Cart</a>
+                        Update Cart</a>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -91,16 +94,17 @@
                 <div class="shoping__checkout">
                     <h5>Cart Total</h5>
                     <ul>
-                        <% long totalCart=0l;
-                        if(shoppingcart!=null){
-                            for (ShoppingCart shoppingCart:shoppingcart) {
-                                double productTotal=shoppingCart.getProductId().getPrice()*shoppingCart.getQuantity();
-                                totalCart+=productTotal;
-                            }}
-                           %>
-                        <li>Subtotal <span>$<%=totalCart%></span></li>
-
-                        <li>Total <span>$<%=totalCart%></span></li>
+                        <%
+                            double totalCart = 0;
+                            if (shoppingcart != null && !shoppingcart.isEmpty()) {
+                                for (ShoppingCart cartItem : shoppingcart) {
+                                    double productTotal = cartItem.getProductId().getPrice() * cartItem.getQuantity();
+                                    totalCart += productTotal;
+                                }
+                            }
+                        %>
+                        <li>Subtotal <span>$<%= totalCart %></span></li>
+                        <li>Total <span>$<%= totalCart %></span></li>
                     </ul>
                     <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
                 </div>
@@ -109,4 +113,5 @@
     </div>
 </section>
 <!-- Shoping Cart Section End -->
+
 <jsp:include page="../../layouts/footer.jsp"></jsp:include>

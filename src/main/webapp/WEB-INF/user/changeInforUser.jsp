@@ -20,29 +20,25 @@
 <body>
 <jsp:include page="../../layouts/header.jsp"></jsp:include>
 <%
-    // Get the login check object from the session
     Object obj = session.getAttribute("checkLogin");
     Account account = null;
     if (obj != null) {
         account = (Account) obj;
     }
 
-    // Check if the user is logged in
     if (account == null) {
 %>
-<!-- Display a message if the user is not logged in -->
 <h1>You are not logged into the website</h1>
 <%
 } else {
-    // Get the error message attribute from the request
+
     String msgError = (String) request.getAttribute("msgError");
     if (msgError == null) {
         msgError = "";
     }
-    User user= (User) request.getAttribute("userLoging");
-    // Retrieve user details using UserDAO
-// Ensure getIdTk sets user details appropriately
-    String userId=user.getUserId();
+    User user = (User) request.getAttribute("userLoging");
+
+    String userId = user.getUserId();
     String fullName = user.getFullName();
     String address = user.getAddress();
     String phone = user.getPhone();
@@ -84,7 +80,7 @@
         </div>
     </form>
     <a href="home">
-        <button class="btn btn-primary mt-2 mb-5">Go back</button>
+        <button class="btn btn-primary mt-  2 mb-5">Go back</button>
     </a>
 </div>
 <%

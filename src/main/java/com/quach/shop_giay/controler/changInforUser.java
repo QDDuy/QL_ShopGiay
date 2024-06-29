@@ -32,7 +32,7 @@ public class changInforUser extends HttpServlet {
 
         // Check if the account is null (user not logged in), redirect to login page
         if (account == null) {
-            resp.sendRedirect(req.getContextPath()+"/login");
+            resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
@@ -45,20 +45,21 @@ public class changInforUser extends HttpServlet {
 
         // Create a new User object with the provided details
         User user = new User(userId, account, email, fullname, address, phone, "");
-
+        System.out.println("listupdate :"+user);
         // Create an instance of UserDAO and update the user information
         UserDAO userDAO = new UserDAO();
         int updateResult = userDAO.update(user);
-
+        System.out.println(updateResult);
         // Set a message based on the result of the update operation
-        if (updateResult >0) {
+        if (updateResult > 0) {
             req.setAttribute("msgSuccess", "User information updated successfully.");
         } else {
             req.setAttribute("msgError", "Failed to update user information. Please try again.");
         }
 
         // Forward the request back to the user information page
-        req.getRequestDispatcher("/WEB-INF/user/changeInforUser.jsp").forward(req, resp);
+        resp.sendRedirect(req.getContextPath()+"/changeInfoUser");
     }
+
 
 }

@@ -92,12 +92,35 @@ public class ShoppingCartDAO implements DAOInterface<ShoppingCart> {
 
     @Override
     public ShoppingCart getId(ShoppingCart shoppingCart) {
-        return null;
-    }
+        ShoppingCart result = null;
+        try {
+            Connection conn = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM shoppingcart WHERE cart_id = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, shoppingCart.getCartId());
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                String cartId = rs.getString("cart_id");
+                String userId = rs.getString("user_id");
+                String productId = rs.getString("product_id");
+                int quantity = rs.getInt("quantity");
 
+                User user = new UserDAO().getId(new User(userId, new Account(), "", "", "", "", ""));
+                Product product = new Product();
+                product.setProductId(productId);
+
+                result = new ShoppingCart(cartId, user, product, quantity);
+            }
+            JDBCUtil.closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     @Override
     public int insert(ShoppingCart shoppingCart) {
         int ketqua = 0;
+        Connection conn = null;
         try {
             String cartId = UUID.randomUUID().toString();
             ShoppingCart cartItem = getCartItem(shoppingCart.getuser().getUserId(), shoppingCart.getProductId().getProductId());
@@ -107,18 +130,21 @@ public class ShoppingCartDAO implements DAOInterface<ShoppingCart> {
                 cartItem.setQuantity(quantity);
                 ketqua = update(cartItem);
             } else {
-                Connection conn = JDBCUtil.getConnection();
-                String sql = "INSERT INTO shoppingcart (cart_id,user_id, product_id, quantity) VALUES (?,?, ?, ?)";
+                conn = JDBCUtil.getConnection();
+                String sql = "INSERT INTO shoppingcart (cart_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)";
                 PreparedStatement st = conn.prepareStatement(sql);
                 st.setString(1, cartId);
                 st.setString(2, shoppingCart.getuser().getUserId());
                 st.setString(3, shoppingCart.getProductId().getProductId());
                 st.setInt(4, shoppingCart.getQuantity());
                 ketqua = st.executeUpdate();
-                JDBCUtil.closeConnection(conn);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                JDBCUtil.closeConnection(conn);
+            }
         }
         return ketqua;
     }
@@ -181,7 +207,11 @@ public class ShoppingCartDAO implements DAOInterface<ShoppingCart> {
 
     @Override
     public int deleteAll(ArrayList<ShoppingCart> arr) {
-        return 0;
+        int dem=0;
+        for (ShoppingCart shoppingCart:arr){
+            dem+=this.delete(shoppingCart);
+        }
+        return dem;
     }
 
     @Override
