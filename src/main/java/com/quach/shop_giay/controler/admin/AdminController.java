@@ -177,11 +177,9 @@ public class AdminController extends HttpServlet {
         Double size = Double.parseDouble(req.getParameter("size"));
 
 
-
-
         CategoryDAO categoryDAO = new CategoryDAO();
         Category category = new Category();
-        BrandDAO  brandDAO = new BrandDAO();
+        BrandDAO brandDAO = new BrandDAO();
         Brand brand = new Brand();
 
         category.setCategoryId(categoryId);
@@ -199,6 +197,7 @@ public class AdminController extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/admin?url=product");
 
     }
+
     private void createProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
 
